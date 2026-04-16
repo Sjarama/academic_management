@@ -1,0 +1,151 @@
+services:
+
+  # ─── USER SERVICE ───────────────────────────────
+  user-db:
+    image: mysql:8.0
+    container_name: user-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: db_usuarios
+      MYSQL_ROOT_PASSWORD: secret
+    ports:
+      - "3307:3306"
+    volumes:
+      - user-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    depends_on:
+      user-db:
+        condition: service_healthy
+    environment:
+      DB_HOST: user-db
+      DB_NAME: db_usuarios
+      DB_USER: root
+      DB_PASS: secret
+
+  # ─── COURSE SERVICE ─────────────────────────────
+  course-db:
+    image: mysql:8.0
+    container_name: course-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: db_cursos
+      MYSQL_ROOT_PASSWORD: secret
+    ports:
+      - "3308:3306"
+    volumes:
+      - course-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  course-service:
+    build: ./course-service
+    container_name: course-service
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+    depends_on:
+      course-db:
+        condition: service_healthy
+    environment:
+      DB_HOST: course-db
+      DB_NAME: db_cursos
+      DB_USER: root
+      DB_PASS: secret
+
+  # ─── PAYMENT SERVICE ────────────────────────────
+  payment-db:
+    image: mysql:8.0
+    container_name: payment-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: db_pagos
+      MYSQL_ROOT_PASSWORD: secret
+    ports:
+      - "3309:3306"
+    volumes:
+      - payment-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  payment-service:
+    build: ./payment-service
+    container_name: payment-service
+    restart: unless-stopped
+    ports:
+      - "8083:8083"
+    depends_on:
+      payment-db:
+        condition: service_healthy
+    environment:
+      DB_HOST: payment-db
+      DB_NAME: db_pagos
+      DB_USER: root
+      DB_PASS: secret
+
+  # ─── NOTIFICATION SERVICE ───────────────────────
+  notification-db:
+    image: mysql:8.0
+    container_name: notification-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: db_notificaciones
+      MYSQL_ROOT_PASSWORD: secret
+    ports:
+      - "3310:3306"
+    volumes:
+      - notification-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  notification-service:
+    build: ./notification-service
+    container_name: notification-service
+    restart: unless-stopped
+    ports:
+      - "8084:8084"
+    depends_on:
+      notification-db:
+        condition: service_healthy
+    environment:
+      DB_HOST: notification-db
+      DB_NAME: db_notificaciones
+      DB_USER: root
+      DB_PASS: secret
+
+  # ─── RABBITMQ ───────────────────────────────────
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: secret
+
+volumes:
+  user-db-data:
+  course-db-data:
+  payment-db-data:
+  notification-db-data:
