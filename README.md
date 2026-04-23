@@ -22,5 +22,33 @@ cd academic_management
 Para finalizar, proceda con el despliegue de la infraestructura definida en el archivo de configuración. Utilice la herramienta Docker Compose para inicializar los contenedores en segundo plano (detached mode), asegurando el levantamiento de las bases de datos y el broker de mensajería:
 
 Bash
-docker-compose up -d user-db course-db payment-db notification-db rabbitmq
+docker-compose up --build user-db user-service course-db course-service
 Este comando descargará las imágenes necesarias y configurará las instancias para los módulos de usuarios, cursos, pagos, notificaciones y el servicio de RabbitMQ de forma simultánea.
+
+
+**Testeo**
+**Estudiantes**
+Pasos a seguir para ver todos los estudiantes:
+Ejecutar en el terminal el siguiente comando:
+docker exec -it user-db mysql -u root -psecret db_usuarios
+
+-- ver todos los estudiantes
+SELECT * FROM students;
+
+
+-- ver estructura de la tabla
+DESCRIBE students;
+
+**Cursos**
+Pasos a seguir para ver todos los cursos:
+Ejecutar en la terminal el siguiente comando:
+docker exec -it course-db mysql -u root -psecret db_cursos
+-- ver todos los cursos
+SELECT * FROM courses;
+-- ver estructura de la tabla
+DESCRIBE courses;
+
+
+-- salir
+exit
+
