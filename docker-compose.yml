@@ -29,6 +29,7 @@ services:
         condition: service_healthy
     environment:
       DB_HOST: user-db
+      DB_PORT: 3306
       DB_NAME: db_usuarios
       DB_USER: root
       DB_PASS: secret
@@ -62,9 +63,11 @@ services:
         condition: service_healthy
     environment:
       DB_HOST: course-db
+      DB_PORT: 3306
       DB_NAME: db_cursos
       DB_USER: root
       DB_PASS: secret
+      USER_SERVICE_URL: http://user-service:8081
 
   # ─── PAYMENT SERVICE ────────────────────────────
   payment-db:
@@ -95,6 +98,7 @@ services:
         condition: service_healthy
     environment:
       DB_HOST: payment-db
+      DB_PORT: 3306
       DB_NAME: db_pagos
       DB_USER: root
       DB_PASS: secret
