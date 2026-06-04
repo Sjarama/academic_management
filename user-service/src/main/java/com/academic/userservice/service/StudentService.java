@@ -37,6 +37,7 @@ public class StudentService {
             existing.setEmail(incoming.getEmail());
             existing.setPhone(incoming.getPhone());
             existing.setAddress(incoming.getAddress());
+            existing.setComuna(incoming.getComuna());
             return repository.save(existing);
         });
     }

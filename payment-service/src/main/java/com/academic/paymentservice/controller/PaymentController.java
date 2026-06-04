@@ -1,7 +1,7 @@
-package com.academic.courseservice.controller;
+package com.academic.paymentservice.controller;
 
-import com.academic.courseservice.model.Course;
-import com.academic.courseservice.service.CourseService;
+import com.academic.paymentservice.model.Payment;
+import com.academic.paymentservice.service.PaymentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,37 +12,32 @@ import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/courses")
+@RequestMapping("/api/payments")
 @RequiredArgsConstructor
-public class CourseController {
+public class PaymentController {
 
-    private final CourseService service;
+    private final PaymentService service;
 
     @GetMapping
-    public List<Course> getAll() {
+    public List<Payment> getAll() {
         return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Course> getById(@PathVariable Long id) {
+    public ResponseEntity<Payment> getById(@PathVariable Long id) {
         return service.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/teacher/{teacherId}")
-    public List<Course> getByTeacher(@PathVariable Long teacherId) {
-        return service.findByTeacherId(teacherId);
-    }
-
     @PostMapping
-    public ResponseEntity<Course> create(@Valid @RequestBody Course course) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(course));
+    public ResponseEntity<Payment> create(@Valid @RequestBody Payment payment) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(payment));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Course> update(@PathVariable Long id, @Valid @RequestBody Course course) {
-        return service.update(id, course)
+    public ResponseEntity<Payment> update(@PathVariable Long id, @Valid @RequestBody Payment payment) {
+        return service.update(id, payment)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/students")
 @RequiredArgsConstructor
@@ -20,6 +21,11 @@ public class StudentController {
     @GetMapping
     public List<Student> getAll() {
         return service.findAll();
+    }
+
+    @GetMapping("/comunas")
+    public List<String> getComunas() {
+        return Student.REGION_METROPOLITANA_COMUNAS;
     }
 
     @GetMapping("/{id}")

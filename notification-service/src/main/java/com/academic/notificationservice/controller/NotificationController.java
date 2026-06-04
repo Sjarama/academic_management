@@ -1,7 +1,7 @@
-package com.academic.courseservice.controller;
+package com.academic.notificationservice.controller;
 
-import com.academic.courseservice.model.Course;
-import com.academic.courseservice.service.CourseService;
+import com.academic.notificationservice.model.Notification;
+import com.academic.notificationservice.service.NotificationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,37 +12,32 @@ import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/courses")
+@RequestMapping("/api/notifications")
 @RequiredArgsConstructor
-public class CourseController {
+public class NotificationController {
 
-    private final CourseService service;
+    private final NotificationService service;
 
     @GetMapping
-    public List<Course> getAll() {
+    public List<Notification> getAll() {
         return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Course> getById(@PathVariable Long id) {
+    public ResponseEntity<Notification> getById(@PathVariable Long id) {
         return service.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/teacher/{teacherId}")
-    public List<Course> getByTeacher(@PathVariable Long teacherId) {
-        return service.findByTeacherId(teacherId);
-    }
-
     @PostMapping
-    public ResponseEntity<Course> create(@Valid @RequestBody Course course) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(course));
+    public ResponseEntity<Notification> create(@Valid @RequestBody Notification notification) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(notification));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Course> update(@PathVariable Long id, @Valid @RequestBody Course course) {
-        return service.update(id, course)
+    public ResponseEntity<Notification> update(@PathVariable Long id, @Valid @RequestBody Notification notification) {
+        return service.update(id, notification)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
