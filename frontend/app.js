@@ -76,6 +76,11 @@ const dashboardPieCanvas = document.getElementById("dashboardPieChart");
 const chartInfo = document.getElementById("chartInfo");
 const dashboardBarCanvas = document.getElementById("dashboardBarChart");
 const barChartInfo = document.getElementById("barChartInfo");
+const reportContainer = document.getElementById("reportContainer");
+const exportButton = document.getElementById("exportButton");
+
+let teachersMapCache = null;
+let currentListData = [];
 
 function resizeCanvas(canvas, ctx) {
   const dpr = window.devicePixelRatio || 1;
@@ -119,6 +124,7 @@ function init() {
 
   serviceSelect.addEventListener("change", onServiceChange);
   refreshButton.addEventListener("click", renderCurrentService);
+  exportButton.addEventListener("click", exportCurrentServiceReport);
   clearButton.addEventListener("click", resetForm);
   entityForm.addEventListener("submit", onSubmit);
   crudTab.addEventListener("click", () => setPage("crud"));
@@ -155,6 +161,8 @@ function renderCurrentService() {
   listTitle.textContent = `Listado de ${config.title}`;
   formTitle.textContent = `Crear o editar ${config.title.slice(0, -1)}`;
   document.getElementById("listDescription").textContent = `Administra los registros de ${config.title}`;
+  reportContainer.innerHTML = "";
+  currentListData = [];
   buildForm(config);
   loadList(config);
 }
@@ -228,12 +236,73 @@ async function loadList(config) {
   try {
     const response = await fetch(config.baseUrl);
     const data = await response.json();
-    renderList(data, config);
+    currentListData = Array.isArray(data) ? data : [];
+    renderList(currentListData, config);
     showMessage(`Datos de ${config.title} cargados correctamente.`, false);
   } catch (error) {
     showMessage(`No se pudo cargar ${config.title}. Verifica que el servicio esté activo.`, true);
     listContainer.innerHTML = "";
   }
+}
+
+function exportCurrentServiceReport() {
+  if (!currentListData || currentListData.length === 0) {
+    showMessage("No hay datos cargados para exportar.", true);
+    return;
+  }
+
+  const config = SERVICE_CONFIG[currentServiceKey];
+  if (currentServiceKey === "curso") {
+    exportCourseReport(currentListData, config);
+  } else {
+    exportGenericReport(currentListData, config);
+  }
+}
+
+function exportGenericReport(items, config) {
+  const rows = buildRows(items);
+  const html = buildExcelHtml(rows, config.title);
+  downloadExcel(html, config.title);
+}
+
+async function exportCourseReport(items, config) {
+  const teacherMap = await loadTeachersMap();
+  const mappedItems = items.map(item => {
+    return {
+      ...item,
+      teacherName: teacherMap[item.teacherId] || `Profesor ${item.teacherId}`
+    };
+  }).map(({ teacherId, ...rest }) => rest);
+
+  const rows = buildRows(mappedItems);
+  const html = buildExcelHtml(rows, config.title);
+  downloadExcel(html, config.title);
+}
+
+function buildRows(items) {
+  const headers = Array.from(new Set(items.flatMap(item => Object.keys(item))));
+  const rows = [headers];
+  items.forEach(item => {
+    rows.push(headers.map(header => formatValue(item[header])));
+  });
+  return rows;
+}
+
+function buildExcelHtml(rows, title) {
+  const tableRows = rows.map(row => `  <tr>${row.map(cell => `<td>${String(cell ?? "").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</td>`).join("")}</tr>`).join("\n");
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title></head><body><table>${tableRows}</table></body></html>`;
+}
+
+function downloadExcel(html, title) {
+  const blob = new Blob([html], { type: "application/vnd.ms-excel" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `reporte-${title.toLowerCase().replace(/\s+/g, "-")}.xls`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
 
 function renderList(items, config) {
@@ -798,6 +867,52 @@ function resetForm() {
       control.value = "";
     }
   });
+}
+
+async function generateReport(config, item) {
+  let reportItem = { ...item };
+
+  if (currentServiceKey === "curso") {
+    const teacherName = await getTeacherName(item.teacherId);
+    reportItem = {
+      ...reportItem,
+      teacherName: teacherName || `Profesor ${item.teacherId}`
+    };
+    delete reportItem.teacherId;
+  }
+
+  const reportHtml = `
+    <div class="report-card">
+      <h4>Reporte de ${config.title.slice(0, -1)} #${item.id}</h4>
+      ${Object.entries(reportItem)
+        .filter(([key]) => key !== "id")
+        .map(([key, value]) => `<p><strong>${formatLabel(key)}:</strong> ${formatValue(value)}</p>`)
+        .join("")}
+    </div>
+  `;
+
+  reportContainer.innerHTML = reportHtml;
+  window.scrollTo({ top: reportContainer.offsetTop - 20, behavior: "smooth" });
+}
+
+async function getTeacherName(teacherId) {
+  if (!teachersMapCache) {
+    teachersMapCache = await loadTeachersMap();
+  }
+  return teachersMapCache[teacherId] || null;
+}
+
+async function loadTeachersMap() {
+  try {
+    const teachers = await fetchData("http://localhost:8081/api/teachers");
+    if (!Array.isArray(teachers)) return {};
+    return teachers.reduce((acc, teacher) => {
+      acc[teacher.id] = `${teacher.firstName} ${teacher.lastName}`;
+      return acc;
+    }, {});
+  } catch (error) {
+    return {};
+  }
 }
 
 function showMessage(message, isError = false) {

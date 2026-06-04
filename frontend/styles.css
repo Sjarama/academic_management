@@ -406,9 +406,32 @@ body {
 .list-container {
   display: grid;
   gap: 16px;
-  max-height: 630px;
+  max-height: 430px;
   overflow: auto;
   padding-right: 4px;
+}
+
+.report-container {
+  margin-top: 18px;
+  display: grid;
+  gap: 14px;
+}
+
+.report-card {
+  border-radius: 18px;
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.report-card h4 {
+  margin: 0 0 12px;
+  font-size: 1rem;
+}
+
+.report-card p {
+  margin: 8px 0;
+  color: var(--muted);
 }
 
 .card {

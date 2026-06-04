@@ -12,12 +12,9 @@
         <div class="hero">
             <div>
                 <h1>Academia</h1>
-                <p>Sistema de gestión académica integrado para administrar estudiantes, cursos, pagos y notificaciones de manera centralizada.</p>
+                <p>Sistema de gestión académica integrado para administrar, generar graficos, genearar reportes de estudiantes, cursos, pagos y notificaciones.</p>
             </div>
-            <div class="hero-meta">
-                <span>Versión</span>
-                <strong>1.0.0</strong>
-            </div>
+            
         </div>
 
         <!-- Navigation Tabs -->
@@ -48,9 +45,11 @@
                     <p id="listDescription" style="color: var(--muted); margin-bottom: 16px;"></p>
                     <div style="display: flex; gap: 12px; margin-bottom: 16px;">
                         <button class="primary" id="refreshButton">Actualizar</button>
+                        <button class="secondary" id="exportButton">Exportar Excel</button>
                         <button class="secondary" id="clearButton">Limpiar filtros</button>
                     </div>
                     <div id="listContainer" class="list-container"></div>
+                    <div id="reportContainer" class="report-container"></div>
                 </div>
 
                 <!-- Form Section -->
