@@ -23,6 +23,18 @@ const SERVICE_CONFIG = {
       {name: "comuna", label: "Comuna", type: "select", options: []}
     ]
   },
+  profesor: {
+    title: "Profesores",
+    baseUrl: "http://localhost:8081/api/teachers",
+    fields: [
+      {name: "firstName", label: "Nombre", type: "text"},
+      {name: "lastName", label: "Apellido", type: "text"},
+      {name: "email", label: "Email", type: "email"},
+      {name: "phone", label: "Teléfono", type: "text"},
+      {name: "address", label: "Dirección", type: "text"},
+      {name: "specialty", label: "Especialidad", type: "text"}
+    ]
+  },
   pago: {
     title: "Pagos",
     baseUrl: "http://localhost:8083/api/payments",
@@ -142,6 +154,7 @@ function renderCurrentService() {
   const config = SERVICE_CONFIG[currentServiceKey];
   listTitle.textContent = `Listado de ${config.title}`;
   formTitle.textContent = `Crear o editar ${config.title.slice(0, -1)}`;
+  document.getElementById("listDescription").textContent = `Administra los registros de ${config.title}`;
   buildForm(config);
   loadList(config);
 }

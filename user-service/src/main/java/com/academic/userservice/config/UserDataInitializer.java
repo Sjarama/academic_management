@@ -8,15 +8,14 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Random;
+
 @Component
 public class UserDataInitializer implements ApplicationRunner {
 
     private final StudentRepository studentRepository;
-<<<<<<< Updated upstream
-=======
     private final TeacherRepository teacherRepository;
     private final Random random = new Random();
->>>>>>> Stashed changes
 
     public UserDataInitializer(StudentRepository studentRepository, TeacherRepository teacherRepository) {
         this.studentRepository = studentRepository;
@@ -25,21 +24,14 @@ public class UserDataInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        if (studentRepository.count() > 0 && teacherRepository.count() > 0) {
-            return;
-        }
+        boolean hasStudents = studentRepository.count() > 0;
+        boolean hasTeachers = teacherRepository.count() > 0;
 
-<<<<<<< Updated upstream
-        studentRepository.save(createStudent("Ana", "Pérez", "ana.perez@example.com", "+34 600 123 456", "Calle Mayor 10"));
-        studentRepository.save(createStudent("Carlos", "López", "carlos.lopez@example.com", "+34 600 654 321", "Avenida Constitución 22"));
-        studentRepository.save(createStudent("María", "Gómez", "maria.gomez@example.com", "+34 600 987 654", "Plaza España 5"));
-=======
         String[] firstNames = {"Ana", "Carlos", "María", "Sofía", "Pablo", "Julieta", "Diego", "Isabel", "Mateo", "Valentina", "Camila", "Agustín", "Fernanda", "Nicolás", "Lucía", "Sebastián", "Catalina", "Benjamín", "Antonia", "José"};
         String[] lastNames = {"Pérez", "López", "Gómez", "Martínez", "Rodríguez", "Sánchez", "Castillo", "Morales", "Vargas", "Fuentes", "Navarro", "Rojas", "Molina", "Jiménez", "Ortiz", "Torres", "Paredes", "Muñoz", "Bravo", "Silva"};
         String[] specialties = {"Matemáticas", "Programación", "Historia", "Física", "Química", "Biología", "Economía", "Filosofía", "Arte", "Diseño", "Redes", "Estadística", "Análisis de Datos", "Ingeniería", "Gestión", "Derecho", "Psicología", "Comunicación", "Marketing", "Sociología"};
 
-        // Crear 20 profesores
-        if (teacherRepository.count() == 0) {
+        if (!hasTeachers) {
             for (int i = 0; i < 20; i++) {
                 String firstName = firstNames[i % firstNames.length];
                 String lastName = lastNames[i % lastNames.length];
@@ -51,8 +43,7 @@ public class UserDataInitializer implements ApplicationRunner {
             }
         }
 
-        // Crear estudiantes
-        if (studentRepository.count() == 0) {
+        if (!hasStudents) {
             for (int i = 1; i <= 70; i++) {
                 String firstName = firstNames[random.nextInt(firstNames.length)];
                 String lastName = lastNames[random.nextInt(lastNames.length)];
@@ -62,17 +53,24 @@ public class UserDataInitializer implements ApplicationRunner {
                 String comuna = Student.REGION_METROPOLITANA_COMUNAS.get(random.nextInt(Student.REGION_METROPOLITANA_COMUNAS.size()));
                 studentRepository.save(createStudent(firstName, lastName, email, phone, address, comuna));
             }
+        } else {
+            studentRepository.findAll().stream()
+                    .filter(student -> student.getComuna() == null || student.getComuna().isBlank())
+                    .forEach(student -> {
+                        student.setComuna(Student.REGION_METROPOLITANA_COMUNAS.get(random.nextInt(Student.REGION_METROPOLITANA_COMUNAS.size())));
+                        studentRepository.save(student);
+                    });
         }
->>>>>>> Stashed changes
     }
 
-    private Student createStudent(String firstName, String lastName, String email, String phone, String address) {
+    private Student createStudent(String firstName, String lastName, String email, String phone, String address, String comuna) {
         Student student = new Student();
         student.setFirstName(firstName);
         student.setLastName(lastName);
         student.setEmail(email);
         student.setPhone(phone);
         student.setAddress(address);
+        student.setComuna(comuna);
         return student;
     }
 

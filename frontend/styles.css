@@ -266,18 +266,15 @@ body {
   max-width: 400px; /* restaurado a tamaño anterior */
 }
 
-.bar-chart-grid {
+.chart-section {
   display: grid;
   gap: 24px;
 }
 
-@media (min-width: 900px) {
-  .bar-chart-grid {
-    /* Columna principal para la barra y columna fija para el pie */
-    grid-template-columns: 1fr 360px;
-    gap: 32px;
-    align-items: start;
-  }
+.chart-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
 }
 
 .bar-chart-info {

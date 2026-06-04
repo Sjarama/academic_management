@@ -36,6 +36,11 @@ public class StudentController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/comunas")
+    public List<String> getComunas() {
+        return Student.REGION_METROPOLITANA_COMUNAS;
+    }
+
     @PostMapping
     public ResponseEntity<Student> create(@Valid @RequestBody Student student) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(student));

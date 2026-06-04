@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academia - Gestión Académica</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-shell">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div>
+                <h1>Academia</h1>
+                <p>Sistema de gestión académica integrado para administrar estudiantes, cursos, pagos y notificaciones de manera centralizada.</p>
+            </div>
+            <div class="hero-meta">
+                <span>Versión</span>
+                <strong>1.0.0</strong>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="top-nav">
+            <button class="nav-button active" id="crudTab">CRUD</button>
+            <button class="nav-button" id="dashboardTab">Dashboard</button>
+        </div>
+
+        <!-- CRUD Page -->
+        <div id="crudPage" class="page-content">
+            <div class="dashboard-panel">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>Gestión de Entidades</h2>
+                        <p>Crear, editar y eliminar estudiantes, cursos, pagos y notificaciones</p>
+                    </div>
+                </div>
+
+                <!-- Service Selector -->
+                <div class="selector-panel">
+                    <label for="serviceSelect">Seleccionar servicio:</label>
+                    <select id="serviceSelect"></select>
+                </div>
+
+                <!-- List Section -->
+                <div>
+                    <h3 id="listTitle">Lista</h3>
+                    <p id="listDescription" style="color: var(--muted); margin-bottom: 16px;"></p>
+                    <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                        <button class="primary" id="refreshButton">Actualizar</button>
+                        <button class="secondary" id="clearButton">Limpiar filtros</button>
+                    </div>
+                    <div id="listContainer" class="list-container"></div>
+                </div>
+
+                <!-- Form Section -->
+                <div style="margin-top: 32px; border-top: 1px solid rgba(100, 116, 139, 0.16); padding-top: 32px;">
+                    <h3 id="formTitle">Formulario</h3>
+                    <form id="entityForm" class="entity-form">
+                        <input type="hidden" id="entityId">
+                        <div id="formFields"></div>
+                        <div class="form-actions">
+                            <button type="submit" class="primary">Guardar</button>
+                            <button type="button" class="secondary" id="clearFormButton">Limpiar</button>
+                        </div>
+                    </form>
+                    <div id="messageBox"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="page-content page-hidden">
+            <div class="dashboard-panel">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>Dashboard Académico</h2>
+                        <p>Visualización de métricas y análisis de desempeño académico</p>
+                    </div>
+                </div>
+
+                <!-- Metrics Grid -->
+                <div class="dashboard-metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon icon-blue">👥</div>
+                        <div class="metric-content">
+                            <div class="metric-value" id="totalStudents">0</div>
+                            <div class="metric-label">Estudiantes</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon icon-green">📚</div>
+                        <div class="metric-content">
+                            <div class="metric-value" id="totalCourses">0</div>
+                            <div class="metric-label">Cursos</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon icon-orange">⏳</div>
+                        <div class="metric-content">
+                            <div class="metric-value" id="pendingStudents">0</div>
+                            <div class="metric-label">Pagos pendientes</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon icon-purple">✓</div>
+                        <div class="metric-content">
+                            <div class="metric-value" id="currentStudents">0</div>
+                            <div class="metric-label">Estudiantes al día</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="chart-header">
+                    <div>
+                        <h3>Análisis Académico</h3>
+                        <p>Distribución de estudiantes por comuna y cursos con mayor reprobación</p>
+                    </div>
+                </div>
+
+                <div class="chart-section">
+                    <!-- Pie Chart -->
+                    <div class="chart-row">
+                        <div class="pie-chart-wrapper">
+                            <canvas id="dashboardPieChart"></canvas>
+                        </div>
+                        <div id="dashboardLegend" class="chart-legend"></div>
+                        <div id="chartInfo" class="chart-info side-info" style="margin-top: 16px;">Haz clic en un segmento para ver detalles.</div>
+                    </div>
+
+                    <!-- Bar Chart -->
+                    <div class="chart-row">
+                        <div class="bar-chart-wrapper">
+                            <canvas id="dashboardBarChart"></canvas>
+                        </div>
+                        <div id="barChartInfo" class="chart-info side-info" style="margin-top: 16px;">Haz clic en una barra para ver el curso y porcentaje.</div>
+                    </div>
+                </div>
+
+                <div id="dashboardBarLegend" class="chart-legend" style="margin-top: 24px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
