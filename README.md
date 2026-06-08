@@ -26,6 +26,8 @@ Para finalizar, proceda con el despliegue de la infraestructura definida en el a
 
 Este comando descargará las imágenes necesarias y configurará las instancias para los módulos de usuarios, cursos, pagos, notificaciones y el servicio de RabbitMQ de forma simultánea.
 
+Después de levantar los servicios, se puede acceder al frontend de gestión principal en `http://localhost:5501` y al nuevo frontend informativo en `http://localhost:5052`.
+
 
 # Testeo
 ## Estudiantes 
