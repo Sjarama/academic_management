@@ -12,17 +12,17 @@ SERVICES = [
     {
         "key": "usuario",
         "display": "Estudiantes",
-        "fields": ["firstName", "lastName", "email", "phone", "address"]
+        "fields": ["firstName", "lastName", "email", "phone", "address", "comuna"]
     },
     {
         "key": "curso",
         "display": "Cursos",
-        "fields": ["name", "description", "teacherId", "credits"]
+        "fields": ["name", "description", "teacherId", "credits", "maxStudents", "approvalPercentage"]
     },
     {
         "key": "profesor",
         "display": "Profesores",
-        "fields": ["firstName", "lastName", "email", "phone"]
+        "fields": ["firstName", "lastName", "email", "phone", "address", "specialty"]
     },
     {
         "key": "pago",
@@ -32,7 +32,7 @@ SERVICES = [
     {
         "key": "notificacion",
         "display": "Notificaciones",
-        "fields": ["recipient", "message", "type"]
+        "fields": ["recipient", "message", "type", "sent"]
     }
 ]
 
@@ -76,18 +76,35 @@ def fill_field(driver, name, value):
     try:
         el = driver.find_element(By.ID, name)
         tag = el.tag_name.lower()
+        input_type = el.get_attribute('type') or ''
         if tag == 'select':
+            # wait up to 5s for options to load (selects may be populated async)
+            end = time.time() + 5
+            while time.time() < end:
+                opts = el.find_elements(By.TAG_NAME, 'option')
+                if len(opts) > 0:
+                    break
+                time.sleep(0.2)
+
             for option in el.find_elements(By.TAG_NAME, 'option'):
-                if option.get_attribute('value') == value or option.text == value:
+                val = option.get_attribute('value') or option.text
+                if val == value or option.text == value:
                     option.click()
                     return
-            # fallback: pick first non-empty
-            opts = [o for o in el.find_elements(By.TAG_NAME, 'option') if o.get_attribute('value')]
+            # fallback: pick first non-empty value option
+            opts = [o for o in el.find_elements(By.TAG_NAME, 'option') if (o.get_attribute('value') or '').strip()]
             if opts:
                 opts[0].click()
         else:
-            el.clear()
-            el.send_keys(value)
+            if input_type.lower() == 'checkbox':
+                # value truthy -> ensure checked, falsy -> unchecked
+                should_check = str(value).lower() in ('1', 'true', 'yes', 'sí', 'si', 's')
+                is_checked = el.is_selected()
+                if should_check != is_checked:
+                    el.click()
+            else:
+                el.clear()
+                el.send_keys(value)
     except NoSuchElementException:
         pass
 
