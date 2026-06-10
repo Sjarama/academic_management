@@ -26,7 +26,7 @@ public class PaymentDataInitializer implements ApplicationRunner {
             return;
         }
 
-        for (long studentId = 1; studentId <= 70; studentId++) {
+        for (long studentId = 1; studentId <= 400; studentId++) {
             Payment payment = createPayment(studentId);
             paymentRepository.save(payment);
         }

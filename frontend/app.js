@@ -40,7 +40,7 @@ const SERVICE_CONFIG = {
     baseUrl: "http://localhost:8083/api/payments",
     fields: [
       {name: "studentId", label: "ID Estudiante", type: "number"},
-      {name: "courseId", label: "ID Curso", type: "number"},
+      
       {name: "amount", label: "Monto", type: "number", step: "0.01"},
       {name: "status", label: "Estado", type: "text"},
       {name: "dueDate", label: "Fecha de vencimiento", type: "date"}
@@ -254,6 +254,12 @@ function exportCurrentServiceReport() {
   const config = SERVICE_CONFIG[currentServiceKey];
   if (currentServiceKey === "curso") {
     exportCourseReport(currentListData, config);
+  } else if (currentServiceKey === "usuario") {
+    exportStudentReport(currentListData, config);
+  } else if (currentServiceKey === "profesor") {
+    exportTeacherReport(currentListData, config);
+  } else if (currentServiceKey === "pago") {
+    exportPaymentReport(currentListData, config);
   } else {
     exportGenericReport(currentListData, config);
   }
@@ -274,7 +280,112 @@ async function exportCourseReport(items, config) {
     };
   }).map(({ teacherId, ...rest }) => rest);
 
-  const rows = buildRows(mappedItems);
+  // convert approvalPercentage to reprobacion percentage when present
+  const enriched = mappedItems.map(it => {
+    const aprob = typeof it.approvalPercentage === 'number' ? it.approvalPercentage : null;
+    return {
+      ...it,
+      reprobacion: aprob != null ? Math.max(0, Math.min(100, 100 - aprob)) : "—"
+    };
+  }).map(({ approvalPercentage, ...rest }) => rest);
+
+  const rows = buildRows(enriched);
+  const html = buildExcelHtml(rows, config.title);
+  downloadExcel(html, config.title);
+}
+
+async function exportStudentReport(items, config) {
+  const payments = await fetchData(SERVICE_CONFIG.pago.baseUrl);
+  const pendingTerms = ["pending", "pendiente", "unpaid", "deudor"];
+  const paidTerms = ["paid", "pagado", "completado", "pagada"];
+  const today = new Date();
+
+  const rows = [];
+  rows.push(["ID", "Nombre", "Estado matrícula", "Fecha"]);
+
+  items.forEach(student => {
+    const studentPayments = Array.isArray(payments) ? payments.filter(p => String(p.studentId) === String(student.id)) : [];
+
+    const hasPending = studentPayments.some(p => {
+      const status = String(p.status ?? "").toLowerCase();
+      const dueDate = p.dueDate ? new Date(p.dueDate) : null;
+      if (pendingTerms.some(t => status.includes(t))) return true;
+      if (dueDate && dueDate < today && !paidTerms.some(t => status.includes(t))) return true;
+      return false;
+    });
+
+    let dateStr = "—";
+    if (hasPending) {
+      const pendingDates = studentPayments.filter(p => p.dueDate).map(p => new Date(p.dueDate));
+      if (pendingDates.length) {
+        const earliest = new Date(Math.min(...pendingDates));
+        dateStr = earliest.toISOString().slice(0,10);
+      }
+    } else {
+      const dates = studentPayments.filter(p => p.dueDate).map(p => new Date(p.dueDate));
+      if (dates.length) {
+        const latest = new Date(Math.max(...dates));
+        dateStr = latest.toISOString().slice(0,10);
+      }
+    }
+
+    rows.push([
+      student.id,
+      `${student.firstName} ${student.lastName}`,
+      hasPending ? "Pendiente" : "Al día",
+      dateStr
+    ]);
+  });
+
+  const html = buildExcelHtml(rows, config.title);
+  downloadExcel(html, config.title);
+}
+
+async function exportTeacherReport(items, config) {
+  const courses = await fetchData(SERVICE_CONFIG.curso.baseUrl);
+  const teacherCourses = {};
+  (Array.isArray(courses) ? courses : []).forEach(c => {
+    const tId = String(c.teacherId ?? "");
+    if (!teacherCourses[tId]) teacherCourses[tId] = [];
+    teacherCourses[tId].push(c.name || `Curso ${c.id}`);
+  });
+
+  const rows = [];
+  rows.push(["ID", "Nombre", "Cursos a cargo"]);
+  items.forEach(t => {
+    rows.push([
+      t.id,
+      `${t.firstName} ${t.lastName}`,
+      (teacherCourses[String(t.id)] || []).join("; ") || "—"
+    ]);
+  });
+
+  const html = buildExcelHtml(rows, config.title);
+  downloadExcel(html, config.title);
+}
+
+async function exportPaymentReport(items, config) {
+  const students = await loadStudentsMap();
+  const pendingTerms = ["pending", "pendiente", "unpaid", "deudor"];
+  const paidTerms = ["paid", "pagado", "completado", "pagada"];
+
+  // Export ONLY unpaid payments (Pendiente -> No, Pagado excluded)
+  const unpaidItems = (items || []).filter(p => {
+    const status = String(p.status ?? "").toLowerCase();
+    if (pendingTerms.some(t => status.includes(t))) return true;
+    if (!paidTerms.some(t => status.includes(t))) return true;
+    return false;
+  });
+
+  const rows = [];
+  rows.push(["Pago ID", "Estudiante", "Pagado", "Monto"]);
+
+  unpaidItems.forEach(p => {
+    const studentName = students[String(p.studentId)] || `Estudiante ${p.studentId}`;
+    const paidLabel = "No";
+    rows.push([p.id, studentName, paidLabel, p.amount ?? "—"]);
+  });
+
   const html = buildExcelHtml(rows, config.title);
   downloadExcel(html, config.title);
 }
@@ -908,6 +1019,19 @@ async function loadTeachersMap() {
     if (!Array.isArray(teachers)) return {};
     return teachers.reduce((acc, teacher) => {
       acc[teacher.id] = `${teacher.firstName} ${teacher.lastName}`;
+      return acc;
+    }, {});
+  } catch (error) {
+    return {};
+  }
+}
+
+async function loadStudentsMap() {
+  try {
+    const students = await fetchData(SERVICE_CONFIG.usuario.baseUrl);
+    if (!Array.isArray(students)) return {};
+    return students.reduce((acc, s) => {
+      acc[s.id] = `${s.firstName} ${s.lastName}`;
       return acc;
     }, {});
   } catch (error) {

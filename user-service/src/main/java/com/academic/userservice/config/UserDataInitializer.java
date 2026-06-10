@@ -44,7 +44,7 @@ public class UserDataInitializer implements ApplicationRunner {
         }
 
         if (!hasStudents) {
-            for (int i = 1; i <= 70; i++) {
+            for (int i = 1; i <= 400; i++) {
                 String firstName = firstNames[random.nextInt(firstNames.length)];
                 String lastName = lastNames[random.nextInt(lastNames.length)];
                 String email = String.format("%s.%s%d@example.com", firstName.toLowerCase(), lastName.toLowerCase(), i);
