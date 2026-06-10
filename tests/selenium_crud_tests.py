@@ -29,11 +29,7 @@ SERVICES = [
         "display": "Pagos",
         "fields": ["studentId", "amount", "status", "dueDate"]
     },
-    {
-        "key": "notificacion",
-        "display": "Notificaciones",
-        "fields": ["recipient", "message", "type", "sent"]
-    }
+    
 ]
 
 
@@ -147,6 +143,10 @@ def run_tests():
                     value = "1"
                 elif 'credits' in f.lower():
                     value = "3"
+                elif 'maxstudents' in f.lower():
+                    value = "30"
+                elif 'approvalpercentage' in f.lower():
+                    value = "85"
                 elif 'amount' in f.lower():
                     value = "35000"
                 elif 'status' in f.lower():
