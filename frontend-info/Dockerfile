@@ -1,5 +1,5 @@
-FROM python:3.12-slim
-WORKDIR /usr/src/app
-COPY . .
+FROM nginx:alpine
+COPY . /usr/share/nginx/html/
+COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 5052
-CMD ["python", "-m", "http.server", "5052", "--bind", "0.0.0.0"]
+CMD ["nginx", "-g", "daemon off;"]

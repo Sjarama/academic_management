@@ -7,70 +7,136 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="page-shell">
-        <header class="topbar">
-            <div>
-                <div class="brand">Academic Management</div>
-                <div class="tagline">Servicio informativo para colegios y establecimientos educativos</div>
+    <!-- Header/Navbar -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h1>Academic<span>Management</span></h1>
+                <p>Gestión Académica Inteligente</p>
             </div>
             <button id="contactButton" class="button button-primary">Contactarnos</button>
-        </header>
+        </div>
+    </header>
 
-        <main class="main-content">
-            <section class="highlight-card feature-card">
-                <div>
-                    <small class="eyebrow">Estadística clave</small>
-                    <h2>Estudiantes administrados</h2>
-                    <p class="hero-note">Este número es importante para generar confianza y mostrar el alcance real del servicio.</p>
+    <!-- Hero Section con onda -->
+    <section class="hero-section">
+        <div class="hero-wrapper">
+            <div class="hero-content">
+                <p class="hero-eyebrow">Bienvenido</p>
+                <h2>Transforma la gestión de tu institución educativa</h2>
+                <p class="hero-description">Academic Management ofrece soluciones integrales para administrar estudiantes, cursos, pagos y notificaciones en una sola plataforma.</p>
+                <button class="button button-secondary hero-cta">Explorar características</button>
+            </div>
+        </div>
+        <svg class="wave wave-1" viewBox="0 0 500 150" preserveAspectRatio="xMidYMid slice">
+            <path d="M0.00,49.85 C150.00,149.60 349.20,-49.85 500.00,49.85 L500.00,149.60 L0.00,149.60 Z" style="stroke: none; fill: #ffffff;"></path>
+        </svg>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <article class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-content">
+                    <p class="stat-label">Estudiantes registrados</p>
+                    <h3 class="stat-number"><span id="studentCount">Cargando...</span></h3>
+                    <p>en la plataforma</p>
                 </div>
-                <div class="hero-stat">
-                    <span id="studentCount">Cargando...</span>
-                    <p>estudiantes registrados</p>
-                </div>
-            </section>
+            </article>
+        </div>
+    </section>
 
-            <section class="hero-panel">
-                <div class="hero-copy">
-                    <p class="eyebrow">Bienvenido</p>
-                    <h1>Conoce el servicio antes de contratarlo</h1>
-                    <p>Esta página presenta la información del servicio y muestra cómo el dashboard escolar ayuda a tu institución a tomar mejores decisiones.</p>
-                    <div class="hero-list">
-                        <div class="hero-item">
-                            <strong>Gestión escolar</strong>
-                            <span>Administra estudiantes, profesores, cursos y pagos desde un solo lugar.</span>
-                        </div>
-                        <div class="hero-item">
-                            <strong>Panel de control</strong>
-                            <span>Visualiza matrícula al día y cursos con mayor reprobación.</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="hero-image" aria-hidden="true"></div>
-            </section>
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="section-header">
+            <h2>Características principales</h2>
+            <p>Todo lo que necesitas para gestionar tu institución</p>
+        </div>
+        <div class="features-grid">
+            <article class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>Gestión de usuarios</h3>
+                <p>Administra estudiantes y profesores de forma centralizada y eficiente.</p>
+                <ul class="feature-list">
+                    <li>Registros completos de estudiantes</li>
+                    <li>Perfiles de docentes</li>
+                    <li>Asignación de roles y permisos</li>
+                </ul>
+            </article>
 
-            <section class="cards-grid">
-                <article class="info-card">
-                    <h2>Información del servicio</h2>
-                    <p>Academic Management ofrece un módulo informativo que detalla sus capacidades y beneficios, sin obligar a contratarlo de inmediato.</p>
-                    <ul>
-                        <li>Administración de usuarios: estudiantes y profesores.</li>
-                        <li>Control de cursos: inscripción, docentes y métricas de reprobación.</li>
-                        <li>Seguimiento de pagos y notificaciones internas.</li>
-                    </ul>
-                </article>
-                <article class="info-card">
-                    <h2>Función del Dashboard</h2>
-                    <p>El dashboard es la herramienta que muestra los datos clave de la institución en un formato claro y directo.</p>
-                    <ul>
-                        <li>Estudiantes con matrícula al día.</li>
-                        <li>Cursos con mayor porcentaje de reprobación.</li>
-                        <li>Resumen de datos relevantes para dirección y administración escolar.</li>
-                    </ul>
-                </article>
-            </section>
-        </main>
-    </div>
+            <article class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Control de cursos</h3>
+                <p>Organiza cursos, docentes y visualiza métricas de desempeño académico.</p>
+                <ul class="feature-list">
+                    <li>Inscripción de estudiantes</li>
+                    <li>Asignación de docentes</li>
+                    <li>Métricas de reprobación</li>
+                </ul>
+            </article>
 
+            <article class="feature-card">
+                <div class="feature-icon">💳</div>
+                <h3>Gestión de pagos</h3>
+                <p>Registra y monitorea pagos de matrículas y aranceles fácilmente.</p>
+                <ul class="feature-list">
+                    <li>Seguimiento de pagos</li>
+                    <li>Estados de matrícula</li>
+                    <li>Reportes financieros</li>
+                </ul>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">🔔</div>
+                <h3>Notificaciones</h3>
+                <p>Mantén a todos informados con notificaciones internas del sistema.</p>
+                <ul class="feature-list">
+                    <li>Alertas de pagos pendientes</li>
+                    <li>Notificaciones de desempeño</li>
+                    <li>Comunicados internos</li>
+                </ul>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3>Dashboard analytics</h3>
+                <p>Visualiza datos clave de tu institución en un formato claro y visual.</p>
+                <ul class="feature-list">
+                    <li>Matrícula al día</li>
+                    <li>Análisis de desempeño</li>
+                    <li>Reportes customizables</li>
+                </ul>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">⚙️</div>
+                <h3>Configuración flexible</h3>
+                <p>Adapta el sistema a las necesidades específicas de tu institución.</p>
+                <ul class="feature-list">
+                    <li>Personalización de módulos</li>
+                    <li>Flujos de trabajo</li>
+                    <li>Integración con sistemas</li>
+                </ul>
+            </article>
+        </div>
+    </section>
+
+    <!-- Wave divider -->
+    <svg class="wave wave-2" viewBox="0 0 500 150" preserveAspectRatio="xMidYMid slice">
+        <path d="M0.00,49.85 C150.00,149.60 349.20,-49.85 500.00,49.85 L500.00,149.60 L0.00,149.60 Z" style="stroke: none; fill: #f0f4f8;"></path>
+    </svg>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>¿Listo para transformar tu institución?</h2>
+            <p>Contacta con nuestro equipo para conocer más sobre Academic Management</p>
+            <button id="ctaButton" class="button button-primary">Obtén más información</button>
+        </div>
+    </section>
+
+    <!-- Modal de contacto -->
     <div class="modal-backdrop page-hidden" id="modalBackdrop">
         <div class="modal-card">
             <div class="modal-header">
