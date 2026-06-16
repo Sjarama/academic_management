@@ -55,3 +55,60 @@ DESCRIBE courses;
 -- salir
 exit
 
+## Comandos útiles y prácticas recomendadas
+
+Usa estos comandos para levantar, detener y hacer backup/restore sin perder datos.
+
+- Levantar (preserva volúmenes):
+```bash
+docker-compose up -d
+```
+
+- Parar sin eliminar volúmenes (libera CPU/RAM):
+```bash
+docker-compose stop
+```
+
+- Parar y eliminar contenedores/red (preserva volúmenes):
+```bash
+docker-compose down
+```
+
+- Parar y eliminar contenedores + volúmenes (BORRA DATOS):
+```bash
+docker-compose down -v
+```
+
+- Reconstruir tras cambios en código (recomendado tras `git pull`):
+```bash
+docker-compose build --no-cache
+docker-compose up -d --build
+```
+
+- Ver logs de un servicio (ej. `user-service`):
+```bash
+docker logs -f user-service
+```
+
+- Listar contenedores y puertos:
+```bash
+docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+```
+
+- Backup de la base de datos MySQL (desde host):
+```bash
+docker exec user-db sh -c 'exec mysqldump -u root -p"$MYSQL_ROOT_PASSWORD" db_usuarios' > backup_user_db.sql
+```
+
+- Restaurar backup (desde host):
+```bash
+cat backup_user_db.sql | docker exec -i user-db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" db_usuarios'
+```
+
+- Limpiar recursos Docker no usados (opcional):
+```bash
+docker system prune -f --volumes
+```
+
+Nota sobre redes e IPs fijas: si el `docker-compose.yml` usa `ipv4_address`, evita ejecutar otra stack que use la misma subred. Si prefieres mayor flexibilidad, elimina las líneas `ipv4_address` para dejar que Docker asigne IPs automáticamente.
+
