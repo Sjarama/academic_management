@@ -37,6 +37,7 @@ public class CourseService {
             existing.setTeacherId(incoming.getTeacherId());
             existing.setCredits(incoming.getCredits());
             existing.setMaxStudents(incoming.getMaxStudents());
+            existing.setApprovalPercentage(incoming.getApprovalPercentage());
             return repository.save(existing);
         });
     }
