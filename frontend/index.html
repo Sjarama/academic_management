@@ -1,147 +1,237 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academia - Gestión Académica</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Gestión Académica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="app-shell">
-        <!-- Hero Section -->
-        <div class="hero">
-            <div>
-                <h1>Administración Académica</h1>
-                <p>Sistema de gestión académica integrado para administrar, generar graficos, genearar reportes de estudiantes, cursos, pagos y notificaciones.</p>
-            </div>
-            
-        </div>
 
-        <!-- Navigation Tabs -->
-        <div class="top-nav">
-            <button class="nav-button active" id="crudTab">CRUD</button>
-            <button class="nav-button" id="dashboardTab">Dashboard</button>
-        </div>
-
-        <!-- CRUD Page -->
-        <div id="crudPage" class="page-content">
-            <div class="dashboard-panel">
-                <div class="dashboard-header">
-                    <div>
-                        <h2>Gestión de Entidades</h2>
-                        <p>Crear, editar y eliminar estudiantes, cursos, pagos y notificaciones</p>
-                    </div>
-                </div>
-
-                <!-- Service Selector -->
-                <div class="selector-panel">
-                    <label for="serviceSelect">Seleccionar servicio:</label>
-                    <select id="serviceSelect"></select>
-                </div>
-
-                <!-- List Section -->
-                <div>
-                    <h3 id="listTitle">Lista</h3>
-                    <p id="listDescription" style="color: var(--muted); margin-bottom: 16px;"></p>
-                    <div style="display: flex; gap: 12px; margin-bottom: 16px;">
-                        <button class="primary" id="refreshButton">Actualizar</button>
-                        <button class="secondary" id="exportButton">Exportar Excel</button>
-                        <button class="secondary" id="clearButton">Limpiar filtros</button>
-                    </div>
-                    <div id="listContainer" class="list-container"></div>
-                    <div id="reportContainer" class="report-container"></div>
-                </div>
-
-                <!-- Form Section -->
-                <div style="margin-top: 32px; border-top: 1px solid rgba(100, 116, 139, 0.16); padding-top: 32px;">
-                    <h3 id="formTitle">Formulario</h3>
-                    <form id="entityForm" class="entity-form">
-                        <input type="hidden" id="entityId">
-                        <div id="formFields"></div>
-                        <div class="form-actions">
-                            <button type="submit" class="primary">Guardar</button>
-                            <button type="button" class="secondary" id="clearFormButton">Limpiar</button>
-                        </div>
-                    </form>
-                    <div id="messageBox"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Dashboard Page -->
-        <div id="dashboardPage" class="page-content page-hidden">
-            <div class="dashboard-panel">
-                <div class="dashboard-header">
-                    <div>
-                        <h2>Dashboard Académico</h2>
-                        <p>Visualización de métricas y análisis de desempeño académico</p>
-                    </div>
-                </div>
-
-                <!-- Metrics Grid -->
-                <div class="dashboard-metrics-grid">
-                    <div class="metric-card">
-                        <div class="metric-icon icon-blue">👥</div>
-                        <div class="metric-content">
-                            <div class="metric-value" id="totalStudents">0</div>
-                            <div class="metric-label">Estudiantes</div>
-                        </div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon icon-green">📚</div>
-                        <div class="metric-content">
-                            <div class="metric-value" id="totalCourses">0</div>
-                            <div class="metric-label">Cursos</div>
-                        </div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon icon-orange">⏳</div>
-                        <div class="metric-content">
-                            <div class="metric-value" id="pendingStudents">0</div>
-                            <div class="metric-label">Pagos pendientes</div>
-                        </div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon icon-purple">✓</div>
-                        <div class="metric-content">
-                            <div class="metric-value" id="currentStudents">0</div>
-                            <div class="metric-label">Estudiantes al día</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Charts Section -->
-                <div class="chart-header">
-                    <div>
-                        <h3>Análisis Académico</h3>
-                        <p>Distribución de estudiantes por comuna y cursos con mayor reprobación</p>
-                    </div>
-                </div>
-
-                <div class="chart-section">
-                    <!-- Pie Chart -->
-                    <div class="chart-row">
-                        <div class="pie-chart-wrapper">
-                            <canvas id="dashboardPieChart"></canvas>
-                        </div>
-                        <div id="dashboardLegend" class="chart-legend"></div>
-                        <div id="chartInfo" class="chart-info side-info" style="margin-top: 16px;">Haz clic en un segmento para ver detalles.</div>
-                    </div>
-
-                    <!-- Bar Chart -->
-                    <div class="chart-row">
-                        <div class="bar-chart-wrapper">
-                            <canvas id="dashboardBarChart"></canvas>
-                        </div>
-                        <div id="barChartInfo" class="chart-info side-info" style="margin-top: 16px;">Haz clic en una barra para ver el curso y porcentaje.</div>
-                    </div>
-                </div>
-
-                <div id="dashboardBarLegend" class="chart-legend" style="margin-top: 24px;"></div>
-            </div>
-        </div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-title">
+        <span>🎓</span> AcadémIA
+      </div>
+      <div class="sidebar-logo-sub">Gestión Académica</div>
     </div>
 
-    <script src="app.js"></script>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Principal</div>
+      <ul class="sidebar-nav" id="sidebar-nav">
+
+        <li class="active" data-page="dashboard">
+          <a>
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            Dashboard
+          </a>
+        </li>
+
+        <li data-page="students">
+          <a>
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            Estudiantes
+          </a>
+        </li>
+
+        <li data-page="teachers">
+          <a>
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+            Profesores
+          </a>
+        </li>
+
+        <li data-page="courses">
+          <a>
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            Cursos
+          </a>
+        </li>
+
+        <li data-page="payments">
+          <a>
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+            </svg>
+            Pagos
+          </a>
+        </li>
+
+        <li data-page="notifications">
+          <a>
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+            Notificaciones
+          </a>
+        </li>
+
+      </ul>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="topbar-title" id="topbar-title">Dashboard</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-secondary btn-sm" id="btn-refresh">↺ Actualizar</button>
+        <button class="btn btn-secondary btn-sm hidden" id="btn-export">↓ Exportar Excel</button>
+        <button class="btn btn-primary btn-sm hidden" id="btn-new">+ Nuevo</button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-icon blue">👥</div>
+            <div>
+              <div class="metric-value" id="m-students">—</div>
+              <div class="metric-label">Estudiantes</div>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon green">📚</div>
+            <div>
+              <div class="metric-value" id="m-courses">—</div>
+              <div class="metric-label">Cursos</div>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon amber">⏳</div>
+            <div>
+              <div class="metric-value" id="m-pending">—</div>
+              <div class="metric-label">Pagos pendientes</div>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon purple">✓</div>
+            <div>
+              <div class="metric-value" id="m-current">—</div>
+              <div class="metric-label">Estudiantes al día</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="charts-grid">
+          <div class="chart-card">
+            <div class="chart-card-title">Estudiantes por comuna</div>
+            <div class="chart-canvas-wrapper">
+              <canvas id="pieChart"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-title">Cursos con mayor reprobación</div>
+            <div class="chart-canvas-wrapper">
+              <canvas id="barChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ESTUDIANTES -->
+      <div class="page" id="page-students">
+        <div class="page-header">
+          <div>
+            <h2>Estudiantes</h2>
+            <p>Gestión de estudiantes registrados en el sistema</p>
+          </div>
+        </div>
+        <div class="table-wrapper" id="table-students"></div>
+      </div>
+
+      <!-- PROFESORES -->
+      <div class="page" id="page-teachers">
+        <div class="page-header">
+          <div>
+            <h2>Profesores</h2>
+            <p>Gestión del cuerpo docente</p>
+          </div>
+        </div>
+        <div class="table-wrapper" id="table-teachers"></div>
+      </div>
+
+      <!-- CURSOS -->
+      <div class="page" id="page-courses">
+        <div class="page-header">
+          <div>
+            <h2>Cursos</h2>
+            <p>Gestión de cursos académicos</p>
+          </div>
+        </div>
+        <div class="table-wrapper" id="table-courses"></div>
+      </div>
+
+      <!-- PAGOS -->
+      <div class="page" id="page-payments">
+        <div class="page-header">
+          <div>
+            <h2>Pagos</h2>
+            <p>Gestión de pagos y estados de matrícula</p>
+          </div>
+        </div>
+        <div class="table-wrapper" id="table-payments"></div>
+      </div>
+
+      <!-- NOTIFICACIONES -->
+      <div class="page" id="page-notifications">
+        <div class="page-header">
+          <div>
+            <h2>Notificaciones</h2>
+            <p>Gestión de notificaciones del sistema</p>
+          </div>
+        </div>
+        <div class="table-wrapper" id="table-notifications"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- MODAL -->
+  <div class="modal-overlay hidden" id="modal-overlay">
+    <div class="modal" id="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-title">Formulario</h3>
+        <button class="modal-close" id="modal-close" title="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="modal-id">
+        <div id="modal-fields"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modal-cancel">Cancelar</button>
+        <button class="btn btn-primary" id="modal-submit">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

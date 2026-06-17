@@ -1,1048 +1,645 @@
-const SERVICE_CONFIG = {
-  curso: {
-    title: "Cursos",
-    baseUrl: "http://localhost:8082/api/courses",
+// ── CONFIGURACIÓN DE SERVICIOS ────────────────────────────────────
+const SERVICES = {
+  students: {
+    title: 'Estudiantes',
+    singular: 'Estudiante',
+    url: 'http://localhost:8081/api/students',
+    columns: ['id', 'firstName', 'lastName', 'email', 'phone', 'address', 'comuna'],
+    labels: {
+      id: 'ID', firstName: 'Nombre', lastName: 'Apellido',
+      email: 'Email', phone: 'Teléfono', address: 'Dirección', comuna: 'Comuna'
+    },
     fields: [
-      {name: "name", label: "Nombre del curso", type: "text"},
-      {name: "description", label: "Descripción", type: "textarea"},
-      {name: "teacherId", label: "ID Profesor", type: "number"},
-      {name: "credits", label: "Créditos", type: "number"},
-      {name: "maxStudents", label: "Máximo estudiantes", type: "number"},
-      {name: "approvalPercentage", label: "Porcentaje de aprobación", type: "number", min: 1, max: 100}
+      { name: 'firstName',  label: 'Nombre',    type: 'text' },
+      { name: 'lastName',   label: 'Apellido',  type: 'text' },
+      { name: 'email',      label: 'Email',     type: 'email' },
+      { name: 'phone',      label: 'Teléfono',  type: 'text' },
+      { name: 'address',    label: 'Dirección', type: 'text' },
+      { name: 'comuna',     label: 'Comuna',    type: 'select-comunas' }
     ]
   },
-  usuario: {
-    title: "Estudiantes",
-    baseUrl: "http://localhost:8081/api/students",
+  teachers: {
+    title: 'Profesores',
+    singular: 'Profesor',
+    url: 'http://localhost:8081/api/teachers',
+    columns: ['id', 'firstName', 'lastName', 'email', 'phone', 'address', 'specialty'],
+    labels: {
+      id: 'ID', firstName: 'Nombre', lastName: 'Apellido',
+      email: 'Email', phone: 'Teléfono', address: 'Dirección', specialty: 'Especialidad'
+    },
     fields: [
-      {name: "firstName", label: "Nombre", type: "text"},
-      {name: "lastName", label: "Apellido", type: "text"},
-      {name: "email", label: "Email", type: "email"},
-      {name: "phone", label: "Teléfono", type: "text"},
-      {name: "address", label: "Dirección", type: "text"},
-      {name: "comuna", label: "Comuna", type: "select", options: []}
+      { name: 'firstName', label: 'Nombre',       type: 'text' },
+      { name: 'lastName',  label: 'Apellido',     type: 'text' },
+      { name: 'email',     label: 'Email',        type: 'email' },
+      { name: 'phone',     label: 'Teléfono',     type: 'text' },
+      { name: 'address',   label: 'Dirección',    type: 'text' },
+      { name: 'specialty', label: 'Especialidad', type: 'text' }
     ]
   },
-  profesor: {
-    title: "Profesores",
-    baseUrl: "http://localhost:8081/api/teachers",
+  courses: {
+    title: 'Cursos',
+    singular: 'Curso',
+    url: 'http://localhost:8082/api/courses',
+    columns: ['id', 'name', 'description', 'teacherId', 'credits', 'maxStudents', 'approvalPercentage'],
+    labels: {
+      id: 'ID', name: 'Nombre', description: 'Descripción',
+      teacherId: 'ID Profesor', credits: 'Créditos',
+      maxStudents: 'Máx. Est.', approvalPercentage: '% Aprobación'
+    },
     fields: [
-      {name: "firstName", label: "Nombre", type: "text"},
-      {name: "lastName", label: "Apellido", type: "text"},
-      {name: "email", label: "Email", type: "email"},
-      {name: "phone", label: "Teléfono", type: "text"},
-      {name: "address", label: "Dirección", type: "text"},
-      {name: "specialty", label: "Especialidad", type: "text"}
+      { name: 'name',               label: 'Nombre del curso',              type: 'text' },
+      { name: 'description',        label: 'Descripción',                   type: 'textarea' },
+      { name: 'teacherId',          label: 'ID Profesor',                   type: 'number' },
+      { name: 'credits',            label: 'Créditos',                      type: 'number' },
+      { name: 'maxStudents',        label: 'Máximo de estudiantes',         type: 'number' },
+      { name: 'approvalPercentage', label: 'Porcentaje de aprobación (1-100)', type: 'number', min: 1, max: 100 }
     ]
   },
-  pago: {
-    title: "Pagos",
-    baseUrl: "http://localhost:8083/api/payments",
+  payments: {
+    title: 'Pagos',
+    singular: 'Pago',
+    url: 'http://localhost:8083/api/payments',
+    columns: ['id', 'studentId', 'amount', 'status', 'dueDate'],
+    labels: {
+      id: 'ID', studentId: 'ID Estudiante', amount: 'Monto', status: 'Estado', dueDate: 'Vencimiento'
+    },
     fields: [
-      {name: "studentId", label: "ID Estudiante", type: "number"},
-      
-      {name: "amount", label: "Monto", type: "number", step: "0.01"},
-      {name: "status", label: "Estado", type: "text"},
-      {name: "dueDate", label: "Fecha de vencimiento", type: "date"}
+      { name: 'studentId', label: 'ID Estudiante',        type: 'number' },
+      { name: 'amount',    label: 'Monto',                type: 'number', step: '0.01' },
+      { name: 'status',    label: 'Estado',               type: 'text' },
+      { name: 'dueDate',   label: 'Fecha de vencimiento', type: 'date' }
     ]
   },
-  notificacion: {
-    title: "Notificaciones",
-    baseUrl: "http://localhost:8084/api/notifications",
+  notifications: {
+    title: 'Notificaciones',
+    singular: 'Notificación',
+    url: 'http://localhost:8084/api/notifications',
+    columns: ['id', 'recipient', 'message', 'type', 'sent'],
+    labels: {
+      id: 'ID', recipient: 'Destinatario', message: 'Mensaje', type: 'Tipo', sent: 'Enviado'
+    },
     fields: [
-      {name: "recipient", label: "Destinatario", type: "text"},
-      {name: "message", label: "Mensaje", type: "textarea"},
-      {name: "type", label: "Tipo", type: "text"},
-      {name: "sent", label: "Enviado", type: "checkbox"}
+      { name: 'recipient', label: 'Destinatario', type: 'text' },
+      { name: 'message',   label: 'Mensaje',      type: 'textarea' },
+      { name: 'type',      label: 'Tipo',         type: 'text' },
+      { name: 'sent',      label: 'Enviado',      type: 'checkbox' }
     ]
   }
 };
 
-const serviceSelect = document.getElementById("serviceSelect");
-const listTitle = document.getElementById("listTitle");
-const formTitle = document.getElementById("formTitle");
-const listContainer = document.getElementById("listContainer");
-const formFields = document.getElementById("formFields");
-const entityForm = document.getElementById("entityForm");
-const entityIdInput = document.getElementById("entityId");
-const messageBox = document.getElementById("messageBox");
-const refreshButton = document.getElementById("refreshButton");
-const clearButton = document.getElementById("clearButton");
-const crudTab = document.getElementById("crudTab");
-const dashboardTab = document.getElementById("dashboardTab");
-const crudPage = document.getElementById("crudPage");
-const dashboardPage = document.getElementById("dashboardPage");
-const dashboardPieCanvas = document.getElementById("dashboardPieChart");
-const chartInfo = document.getElementById("chartInfo");
-const dashboardBarCanvas = document.getElementById("dashboardBarChart");
-const barChartInfo = document.getElementById("barChartInfo");
-const reportContainer = document.getElementById("reportContainer");
-const exportButton = document.getElementById("exportButton");
+// ── ESTADO GLOBAL ─────────────────────────────────────────────────
+let currentPage = 'dashboard';
+let pageData    = {};
+let modalPage   = null;
+let comunasCache = null;
+let pieChart    = null;
+let barChart    = null;
 
-let teachersMapCache = null;
-let currentListData = [];
+const $ = id => document.getElementById(id);
 
-function resizeCanvas(canvas, ctx) {
-  const dpr = window.devicePixelRatio || 1;
-  const rect = canvas.getBoundingClientRect();
-  const width = Math.max(0, Math.floor(rect.width));
-  const height = Math.max(0, Math.floor(rect.height));
-
-  if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
-  }
-
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  return { width, height, dpr };
-}
-
-let currentServiceKey = "curso";
-let currentPage = "crud";
-let pieChartState = {
-  entries: [],
-  colors: [],
-  total: 0,
-  selectedIndex: null,
-  hoverIndex: null
-};
-let barChartState = {
-  entries: [],
-  selectedIndex: null,
-  hoverIndex: null
-};
-
+// ── INIT ──────────────────────────────────────────────────────────
 function init() {
-  Object.keys(SERVICE_CONFIG).forEach(key => {
-    const option = document.createElement("option");
-    option.value = key;
-    option.textContent = SERVICE_CONFIG[key].title;
-    serviceSelect.appendChild(option);
+  $('sidebar-nav').addEventListener('click', e => {
+    const li = e.target.closest('li[data-page]');
+    if (li) navigate(li.dataset.page);
   });
 
-  serviceSelect.addEventListener("change", onServiceChange);
-  refreshButton.addEventListener("click", renderCurrentService);
-  exportButton.addEventListener("click", exportCurrentServiceReport);
-  clearButton.addEventListener("click", resetForm);
-  entityForm.addEventListener("submit", onSubmit);
-  crudTab.addEventListener("click", () => setPage("crud"));
-  dashboardTab.addEventListener("click", () => setPage("dashboard"));
+  $('btn-refresh').addEventListener('click', () => {
+    if (currentPage === 'dashboard') renderDashboard();
+    else loadPage(currentPage);
+  });
 
-  serviceSelect.value = currentServiceKey;
-  setPage("crud");
-  renderCurrentService();
+  $('btn-new').addEventListener('click', () => openModal(currentPage, null));
+  $('btn-export').addEventListener('click', () => exportData(currentPage));
+
+  $('modal-close').addEventListener('click', closeModal);
+  $('modal-cancel').addEventListener('click', closeModal);
+  $('modal-overlay').addEventListener('click', e => {
+    if (e.target === $('modal-overlay')) closeModal();
+  });
+  $('modal-submit').addEventListener('click', submitModal);
+
+  navigate('dashboard');
 }
 
-function onServiceChange(event) {
-  currentServiceKey = event.target.value;
-  resetForm();
-  renderCurrentService();
-}
+// ── NAVEGACIÓN ────────────────────────────────────────────────────
+const PAGE_TITLES = {
+  dashboard: 'Dashboard', students: 'Estudiantes', teachers: 'Profesores',
+  courses: 'Cursos', payments: 'Pagos', notifications: 'Notificaciones'
+};
 
-function setPage(page) {
+function navigate(page) {
   currentPage = page;
-  const isCrud = page === "crud";
-  crudPage.classList.toggle("page-hidden", !isCrud);
-  dashboardPage.classList.toggle("page-hidden", isCrud);
-  crudTab.classList.toggle("active", isCrud);
-  dashboardTab.classList.toggle("active", !isCrud);
 
-  if (isCrud) {
-    renderCurrentService();
-  } else {
-    renderDashboard();
-  }
-}
-
-function renderCurrentService() {
-  const config = SERVICE_CONFIG[currentServiceKey];
-  listTitle.textContent = `Listado de ${config.title}`;
-  formTitle.textContent = `Crear o editar ${config.title.slice(0, -1)}`;
-  document.getElementById("listDescription").textContent = `Administra los registros de ${config.title}`;
-  reportContainer.innerHTML = "";
-  currentListData = [];
-  buildForm(config);
-  loadList(config);
-}
-
-function buildForm(config) {
-  formFields.innerHTML = "";
-
-  config.fields.forEach(field => {
-    const group = document.createElement("div");
-    group.className = "form-group";
-
-    const label = document.createElement("label");
-    label.htmlFor = field.name;
-    label.textContent = field.label;
-
-    let input;
-    if (field.type === "textarea") {
-      input = document.createElement("textarea");
-    } else if (field.type === "select") {
-      input = document.createElement("select");
-      if (field.options.length === 0 && field.name === "comuna") {
-        loadComunas(input);
-      }
-    } else {
-      input = document.createElement("input");
-      input.type = field.type;
-    }
-
-    input.id = field.name;
-    input.name = field.name;
-    input.placeholder = field.label;
-    if (field.min !== undefined) input.min = field.min;
-    if (field.max !== undefined) input.max = field.max;
-    if (field.step !== undefined) input.step = field.step;
-    if (field.type === "checkbox") input.value = "true";
-
-    group.appendChild(label);
-    group.appendChild(input);
-    formFields.appendChild(group);
+  document.querySelectorAll('#sidebar-nav li').forEach(li => {
+    li.classList.toggle('active', li.dataset.page === page);
   });
+
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  $(`page-${page}`).classList.add('active');
+
+  $('topbar-title').textContent = PAGE_TITLES[page] || page;
+
+  const isCrud = page !== 'dashboard';
+  $('btn-new').classList.toggle('hidden', !isCrud);
+  $('btn-export').classList.toggle('hidden', !isCrud);
+
+  if (page === 'dashboard') renderDashboard();
+  else loadPage(page);
 }
 
-async function loadComunas(selectElement) {
-  const userConfig = SERVICE_CONFIG.usuario;
+// ── CARGA DE DATOS ────────────────────────────────────────────────
+async function fetchJSON(url) {
   try {
-    const response = await fetch(`${userConfig.baseUrl}/comunas`);
-    const comunas = await response.json();
-    populateComunaOptions(selectElement, comunas);
-  } catch (error) {
-    populateComunaOptions(selectElement, [
-      "Ñuñoa", "Providencia", "Las Condes", "Santiago", "Maipú", "La Florida", "Puente Alto"
-    ]);
-  }
-}
-
-function populateComunaOptions(selectElement, options) {
-  selectElement.innerHTML = "";
-  const noneOption = document.createElement("option");
-  noneOption.value = "";
-  noneOption.textContent = "Sin comuna";
-  selectElement.appendChild(noneOption);
-  options.forEach(comuna => {
-    const option = document.createElement("option");
-    option.value = comuna;
-    option.textContent = comuna;
-    selectElement.appendChild(option);
-  });
-}
-
-async function loadList(config) {
-  try {
-    const response = await fetch(config.baseUrl);
-    const data = await response.json();
-    currentListData = Array.isArray(data) ? data : [];
-    renderList(currentListData, config);
-    showMessage(`Datos de ${config.title} cargados correctamente.`, false);
-  } catch (error) {
-    showMessage(`No se pudo cargar ${config.title}. Verifica que el servicio esté activo.`, true);
-    listContainer.innerHTML = "";
-  }
-}
-
-function exportCurrentServiceReport() {
-  if (!currentListData || currentListData.length === 0) {
-    showMessage("No hay datos cargados para exportar.", true);
-    return;
-  }
-
-  const config = SERVICE_CONFIG[currentServiceKey];
-  if (currentServiceKey === "curso") {
-    exportCourseReport(currentListData, config);
-  } else if (currentServiceKey === "usuario") {
-    exportStudentReport(currentListData, config);
-  } else if (currentServiceKey === "profesor") {
-    exportTeacherReport(currentListData, config);
-  } else if (currentServiceKey === "pago") {
-    exportPaymentReport(currentListData, config);
-  } else {
-    exportGenericReport(currentListData, config);
-  }
-}
-
-function exportGenericReport(items, config) {
-  const rows = buildRows(items);
-  const html = buildExcelHtml(rows, config.title);
-  downloadExcel(html, config.title);
-}
-
-async function exportCourseReport(items, config) {
-  const teacherMap = await loadTeachersMap();
-  const mappedItems = items.map(item => {
-    return {
-      ...item,
-      teacherName: teacherMap[item.teacherId] || `Profesor ${item.teacherId}`
-    };
-  }).map(({ teacherId, ...rest }) => rest);
-
-  // convert approvalPercentage to reprobacion percentage when present
-  const enriched = mappedItems.map(it => {
-    const aprob = typeof it.approvalPercentage === 'number' ? it.approvalPercentage : null;
-    return {
-      ...it,
-      reprobacion: aprob != null ? Math.max(0, Math.min(100, 100 - aprob)) : "—"
-    };
-  }).map(({ approvalPercentage, ...rest }) => rest);
-
-  const rows = buildRows(enriched);
-  const html = buildExcelHtml(rows, config.title);
-  downloadExcel(html, config.title);
-}
-
-async function exportStudentReport(items, config) {
-  const payments = await fetchData(SERVICE_CONFIG.pago.baseUrl);
-  const pendingTerms = ["pending", "pendiente", "unpaid", "deudor"];
-  const paidTerms = ["paid", "pagado", "completado", "pagada"];
-  const today = new Date();
-
-  const rows = [];
-  rows.push(["ID", "Nombre", "Estado matrícula", "Fecha"]);
-
-  items.forEach(student => {
-    const studentPayments = Array.isArray(payments) ? payments.filter(p => String(p.studentId) === String(student.id)) : [];
-
-    const hasPending = studentPayments.some(p => {
-      const status = String(p.status ?? "").toLowerCase();
-      const dueDate = p.dueDate ? new Date(p.dueDate) : null;
-      if (pendingTerms.some(t => status.includes(t))) return true;
-      if (dueDate && dueDate < today && !paidTerms.some(t => status.includes(t))) return true;
-      return false;
-    });
-
-    let dateStr = "—";
-    if (hasPending) {
-      const pendingDates = studentPayments.filter(p => p.dueDate).map(p => new Date(p.dueDate));
-      if (pendingDates.length) {
-        const earliest = new Date(Math.min(...pendingDates));
-        dateStr = earliest.toISOString().slice(0,10);
-      }
-    } else {
-      const dates = studentPayments.filter(p => p.dueDate).map(p => new Date(p.dueDate));
-      if (dates.length) {
-        const latest = new Date(Math.max(...dates));
-        dateStr = latest.toISOString().slice(0,10);
-      }
-    }
-
-    rows.push([
-      student.id,
-      `${student.firstName} ${student.lastName}`,
-      hasPending ? "Pendiente" : "Al día",
-      dateStr
-    ]);
-  });
-
-  const html = buildExcelHtml(rows, config.title);
-  downloadExcel(html, config.title);
-}
-
-async function exportTeacherReport(items, config) {
-  const courses = await fetchData(SERVICE_CONFIG.curso.baseUrl);
-  const teacherCourses = {};
-  (Array.isArray(courses) ? courses : []).forEach(c => {
-    const tId = String(c.teacherId ?? "");
-    if (!teacherCourses[tId]) teacherCourses[tId] = [];
-    teacherCourses[tId].push(c.name || `Curso ${c.id}`);
-  });
-
-  const rows = [];
-  rows.push(["ID", "Nombre", "Cursos a cargo"]);
-  items.forEach(t => {
-    rows.push([
-      t.id,
-      `${t.firstName} ${t.lastName}`,
-      (teacherCourses[String(t.id)] || []).join("; ") || "—"
-    ]);
-  });
-
-  const html = buildExcelHtml(rows, config.title);
-  downloadExcel(html, config.title);
-}
-
-async function exportPaymentReport(items, config) {
-  const students = await loadStudentsMap();
-  const pendingTerms = ["pending", "pendiente", "unpaid", "deudor"];
-  const paidTerms = ["paid", "pagado", "completado", "pagada"];
-
-  // Export ONLY unpaid payments (Pendiente -> No, Pagado excluded)
-  const unpaidItems = (items || []).filter(p => {
-    const status = String(p.status ?? "").toLowerCase();
-    if (pendingTerms.some(t => status.includes(t))) return true;
-    if (!paidTerms.some(t => status.includes(t))) return true;
-    return false;
-  });
-
-  const rows = [];
-  rows.push(["Pago ID", "Estudiante", "Pagado", "Monto"]);
-
-  unpaidItems.forEach(p => {
-    const studentName = students[String(p.studentId)] || `Estudiante ${p.studentId}`;
-    const paidLabel = "No";
-    rows.push([p.id, studentName, paidLabel, p.amount ?? "—"]);
-  });
-
-  const html = buildExcelHtml(rows, config.title);
-  downloadExcel(html, config.title);
-}
-
-function buildRows(items) {
-  const headers = Array.from(new Set(items.flatMap(item => Object.keys(item))));
-  const rows = [headers];
-  items.forEach(item => {
-    rows.push(headers.map(header => formatValue(item[header])));
-  });
-  return rows;
-}
-
-function buildExcelHtml(rows, title) {
-  const tableRows = rows.map(row => `  <tr>${row.map(cell => `<td>${String(cell ?? "").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</td>`).join("")}</tr>`).join("\n");
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title></head><body><table>${tableRows}</table></body></html>`;
-}
-
-function downloadExcel(html, title) {
-  const blob = new Blob([html], { type: "application/vnd.ms-excel" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `reporte-${title.toLowerCase().replace(/\s+/g, "-")}.xls`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-}
-
-function renderList(items, config) {
-  listContainer.innerHTML = "";
-
-  if (!Array.isArray(items) || items.length === 0) {
-    listContainer.innerHTML = `<div class="card"><p>No hay registros disponibles para ${config.title}.</p></div>`;
-    return;
-  }
-
-  items.forEach(item => {
-    const card = document.createElement("article");
-    card.className = "card";
-
-    const title = document.createElement("h3");
-    title.textContent = `${config.title.slice(0, -1)} #${item.id}`;
-    card.appendChild(title);
-
-    Object.entries(item).forEach(([key, value]) => {
-      if (key === "id") return;
-      const paragraph = document.createElement("p");
-      paragraph.innerHTML = `<strong>${formatLabel(key)}:</strong> ${formatValue(value)}`;
-      card.appendChild(paragraph);
-    });
-
-    const actions = document.createElement("div");
-    actions.className = "card-actions";
-
-    const editButton = document.createElement("button");
-    editButton.className = "secondary";
-    editButton.textContent = "Editar";
-    editButton.addEventListener("click", () => populateForm(item));
-
-    const deleteButton = document.createElement("button");
-    deleteButton.className = "secondary";
-    deleteButton.textContent = "Eliminar";
-    deleteButton.addEventListener("click", () => deleteEntity(config, item.id));
-
-    actions.appendChild(editButton);
-    actions.appendChild(deleteButton);
-    card.appendChild(actions);
-    listContainer.appendChild(card);
-  });
-}
-
-function formatLabel(key) {
-  return key
-    .replace(/([A-Z])/g, " $1")
-    .replace(/^./, str => str.toUpperCase());
-}
-
-function formatValue(value) {
-  if (typeof value === "boolean") {
-    return value ? "Sí" : "No";
-  }
-  if (value === null || value === undefined || value === "") {
-    return "—";
-  }
-  return value;
-}
-
-async function renderDashboard() {
-  const [students, courses, payments, teachers] = await Promise.all([
-    fetchData(SERVICE_CONFIG.usuario.baseUrl),
-    fetchData(SERVICE_CONFIG.curso.baseUrl),
-    fetchData(SERVICE_CONFIG.pago.baseUrl),
-    fetchData("http://localhost:8081/api/teachers")
-  ]);
-
-  const validStudents = Array.isArray(students) ? students : [];
-  const validCourses = Array.isArray(courses) ? courses : [];
-  const validPayments = Array.isArray(payments) ? payments : [];
-  const validTeachers = Array.isArray(teachers) ? teachers : [];
-
-  // Crear mapa de profesores por ID
-  const teachersMap = validTeachers.reduce((acc, teacher) => {
-    acc[teacher.id] = `${teacher.firstName} ${teacher.lastName}`;
-    return acc;
-  }, {});
-
-  const paymentGroups = validPayments.reduce((acc, payment) => {
-    const studentId = payment.studentId;
-    if (studentId == null) return acc;
-    if (!acc[studentId]) acc[studentId] = [];
-    acc[studentId].push(payment);
-    return acc;
-  }, {});
-
-  const pendingStudentIds = new Set();
-  const currentStudentIds = new Set();
-  const today = new Date();
-
-  Object.entries(paymentGroups).forEach(([studentId, paymentsByStudent]) => {
-    const hasPending = paymentsByStudent.some(payment => {
-      const status = String(payment.status ?? "").toLowerCase();
-      const dueDate = payment.dueDate ? new Date(payment.dueDate) : null;
-      const pendingStatus = ["pending", "pendiente", "unpaid", "deudor"];
-      const paidStatus = ["paid", "pagado", "completado", "pagada"];
-
-      if (pendingStatus.some(term => status.includes(term))) return true;
-      if (dueDate && dueDate < today && !paidStatus.some(term => status.includes(term))) return true;
-      return false;
-    });
-
-    if (hasPending) {
-      pendingStudentIds.add(studentId);
-    } else {
-      currentStudentIds.add(studentId);
-    }
-  });
-
-  const studentsWithNoPayments = validStudents.filter(student => {
-    return !paymentGroups[student.id];
-  }).length;
-
-  const totalCurrent = currentStudentIds.size + studentsWithNoPayments;
-
-  document.getElementById("totalStudents").textContent = validStudents.length;
-  document.getElementById("totalCourses").textContent = validCourses.length;
-  document.getElementById("pendingStudents").textContent = pendingStudentIds.size;
-  document.getElementById("currentStudents").textContent = totalCurrent;
-
-  renderComunaPieChart(validStudents);
-  renderFailingCoursesBarChart(validCourses, teachersMap);
-}
-
-async function fetchData(url) {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) return [];
-    return await response.json();
-  } catch (error) {
+    const res = await fetch(url);
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
     return [];
   }
 }
 
-function renderComunaPieChart(students) {
-  const canvas = dashboardPieCanvas;
-  const legend = document.getElementById("dashboardLegend");
-  const ctx = canvas.getContext("2d");
-  const info = chartInfo;
-  const counts = students.reduce((acc, student) => {
-    const comuna = String(student.comuna || "Sin comuna").trim();
-    if (!acc[comuna]) acc[comuna] = 0;
-    acc[comuna] += 1;
+async function loadPage(page) {
+  const svc = SERVICES[page];
+  const wrapper = $(`table-${page}`);
+  wrapper.innerHTML = buildLoadingRow(svc.columns.length + 1);
+
+  const data = await fetchJSON(svc.url);
+  pageData[page] = Array.isArray(data) ? data : [];
+
+  if (!pageData[page].length) {
+    wrapper.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <p>No hay ${svc.title.toLowerCase()} registrados</p>
+      </div>`;
+    return;
+  }
+
+  renderTable(page, pageData[page]);
+}
+
+function buildLoadingRow(cols) {
+  return `<table><tbody><tr class="loading-row"><td colspan="${cols}">Cargando datos...</td></tr></tbody></table>`;
+}
+
+// ── TABLA ─────────────────────────────────────────────────────────
+function renderTable(page, items) {
+  const svc = SERVICES[page];
+  const cols = svc.columns;
+
+  const thead = `<thead><tr>
+    ${cols.map(c => `<th>${svc.labels[c] || c}</th>`).join('')}
+    <th style="width:90px">Acciones</th>
+  </tr></thead>`;
+
+  const tbody = `<tbody>${items.map(item => `
+    <tr>
+      ${cols.map(col => `<td title="${item[col] ?? ''}">${renderCell(col, item[col])}</td>`).join('')}
+      <td>
+        <div style="display:flex;gap:5px">
+          <button class="btn btn-secondary btn-sm btn-icon"
+            onclick="openModal('${page}', ${item.id})" title="Editar">✏️</button>
+          <button class="btn btn-danger btn-sm btn-icon"
+            onclick="confirmDelete('${page}', ${item.id})" title="Eliminar">🗑️</button>
+        </div>
+      </td>
+    </tr>`).join('')}
+  </tbody>`;
+
+  $(`table-${page}`).innerHTML = `<table>${thead}${tbody}</table>`;
+}
+
+function renderCell(col, val) {
+  if (val === null || val === undefined || val === '') return '<span style="color:#cbd5e1">—</span>';
+
+  if (col === 'status') {
+    const s = String(val).toLowerCase();
+    const isPending = ['pending', 'pendiente', 'unpaid', 'deudor'].some(t => s.includes(t));
+    const isPaid    = ['paid', 'pagado', 'completado', 'pagada'].some(t => s.includes(t));
+    if (isPending) return `<span class="badge badge-red">⚠ ${val}</span>`;
+    if (isPaid)    return `<span class="badge badge-green">✓ ${val}</span>`;
+    return `<span class="badge badge-yellow">${val}</span>`;
+  }
+
+  if (col === 'sent') {
+    return val
+      ? `<span class="badge badge-green">Sí</span>`
+      : `<span class="badge badge-gray">No</span>`;
+  }
+
+  if (col === 'approvalPercentage') {
+    const n = Number(val);
+    const cls = n >= 70 ? 'badge-green' : n >= 50 ? 'badge-yellow' : 'badge-red';
+    return `<span class="badge ${cls}">${val}%</span>`;
+  }
+
+  if (col === 'amount') {
+    return `$${Number(val).toLocaleString('es-CL')}`;
+  }
+
+  return String(val);
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────
+async function openModal(page, id) {
+  modalPage = page;
+  const svc  = SERVICES[page];
+  const item = id != null ? (pageData[page] || []).find(x => x.id === id) : null;
+
+  $('modal-title').textContent = item
+    ? `Editar ${svc.singular}`
+    : `Nuevo ${svc.singular}`;
+  $('modal-id').value = item ? item.id : '';
+
+  const container = $('modal-fields');
+  container.innerHTML = '';
+
+  for (const field of svc.fields) {
+    if (field.type === 'checkbox') {
+      const div = document.createElement('div');
+      div.className = 'form-group';
+      div.innerHTML = `
+        <div class="form-checkbox">
+          <input type="checkbox" id="mf-${field.name}" name="${field.name}"
+            ${item && item[field.name] ? 'checked' : ''}>
+          <label for="mf-${field.name}">${field.label}</label>
+        </div>`;
+      container.appendChild(div);
+      continue;
+    }
+
+    const div = document.createElement('div');
+    div.className = 'form-group';
+    const label = `<label for="mf-${field.name}">${field.label}</label>`;
+    let input = '';
+
+    if (field.type === 'textarea') {
+      input = `<textarea id="mf-${field.name}" name="${field.name}"
+        placeholder="${field.label}">${item && item[field.name] != null ? item[field.name] : ''}</textarea>`;
+
+    } else if (field.type === 'select-comunas') {
+      const comunas = await loadComunas();
+      const opts = [`<option value="">Sin comuna</option>`,
+        ...comunas.map(c => `<option value="${c}" ${item && item.comuna === c ? 'selected' : ''}>${c}</option>`)
+      ].join('');
+      input = `<select id="mf-${field.name}" name="${field.name}">${opts}</select>`;
+
+    } else {
+      const extras = [
+        field.min  != null ? `min="${field.min}"`   : '',
+        field.max  != null ? `max="${field.max}"`   : '',
+        field.step != null ? `step="${field.step}"` : ''
+      ].filter(Boolean).join(' ');
+      const val = item && item[field.name] != null ? item[field.name] : '';
+      input = `<input type="${field.type}" id="mf-${field.name}" name="${field.name}"
+        value="${val}" placeholder="${field.label}" ${extras}>`;
+    }
+
+    div.innerHTML = label + input;
+    container.appendChild(div);
+  }
+
+  $('modal-overlay').classList.remove('hidden');
+}
+
+function closeModal() {
+  $('modal-overlay').classList.add('hidden');
+  modalPage = null;
+}
+
+async function submitModal() {
+  const page = modalPage;
+  const svc  = SERVICES[page];
+  const id   = $('modal-id').value.trim();
+  const payload = {};
+
+  for (const field of svc.fields) {
+    const el = $(`mf-${field.name}`);
+    if (!el) continue;
+
+    if (field.type === 'checkbox') {
+      payload[field.name] = el.checked;
+    } else if (field.type === 'number') {
+      const v = el.value.trim();
+      payload[field.name] = v === '' ? null
+        : field.step === '0.01' ? parseFloat(v) : parseInt(v, 10);
+    } else {
+      const v = el.value.trim();
+      payload[field.name] = v || null;
+    }
+  }
+
+  if (page === 'courses') {
+    const ap = payload.approvalPercentage;
+    if (!ap || ap < 1 || ap > 100) {
+      toast('El porcentaje de aprobación debe estar entre 1 y 100', 'error');
+      return;
+    }
+  }
+
+  const method = id ? 'PUT' : 'POST';
+  const url    = id ? `${svc.url}/${id}` : svc.url;
+
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      toast(id ? 'Registro actualizado correctamente' : 'Registro creado correctamente', 'success');
+      closeModal();
+      loadPage(page);
+    } else {
+      const msg = await res.text();
+      toast(`Error del servidor: ${msg}`, 'error');
+    }
+  } catch {
+    toast('No se pudo conectar con el servicio', 'error');
+  }
+}
+
+async function confirmDelete(page, id) {
+  if (!confirm(`¿Eliminar registro #${id}? Esta acción no se puede deshacer.`)) return;
+  const svc = SERVICES[page];
+  try {
+    const res = await fetch(`${svc.url}/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+      toast(`Registro #${id} eliminado`, 'success');
+      loadPage(page);
+    } else {
+      toast('No se pudo eliminar el registro', 'error');
+    }
+  } catch {
+    toast('Error de conexión', 'error');
+  }
+}
+
+// ── COMUNAS ───────────────────────────────────────────────────────
+const DEFAULT_COMUNAS = [
+  'Santiago', 'Providencia', 'Las Condes', 'Ñuñoa', 'Maipú',
+  'La Florida', 'Puente Alto', 'Vitacura', 'La Reina', 'Peñalolén',
+  'San Miguel', 'Macul', 'Cerrillos', 'Conchalí', 'Renca'
+];
+
+async function loadComunas() {
+  if (comunasCache) return comunasCache;
+  try {
+    const res = await fetch('http://localhost:8081/api/students/comunas');
+    if (res.ok) { comunasCache = await res.json(); return comunasCache; }
+  } catch { /* usa defaults */ }
+  comunasCache = DEFAULT_COMUNAS;
+  return comunasCache;
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────
+function toast(message, type = 'info') {
+  const icons = { success: '✓', error: '✕', info: 'ℹ' };
+  const container = $('toast-container');
+  const div = document.createElement('div');
+  div.className = `toast toast-${type}`;
+  div.innerHTML = `<span>${icons[type] || ''}</span><span>${message}</span>`;
+  container.appendChild(div);
+  setTimeout(() => div.remove(), 3500);
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────
+async function renderDashboard() {
+  $('m-students').textContent = '…';
+  $('m-courses').textContent  = '…';
+  $('m-pending').textContent  = '…';
+  $('m-current').textContent  = '…';
+
+  const [students, courses, payments, teachers] = await Promise.all([
+    fetchJSON('http://localhost:8081/api/students'),
+    fetchJSON('http://localhost:8082/api/courses'),
+    fetchJSON('http://localhost:8083/api/payments'),
+    fetchJSON('http://localhost:8081/api/teachers')
+  ]);
+
+  const validStudents  = Array.isArray(students)  ? students  : [];
+  const validCourses   = Array.isArray(courses)   ? courses   : [];
+  const validPayments  = Array.isArray(payments)  ? payments  : [];
+  const validTeachers  = Array.isArray(teachers)  ? teachers  : [];
+
+  const teachersMap = validTeachers.reduce((acc, t) => {
+    acc[t.id] = `${t.firstName} ${t.lastName}`;
     return acc;
   }, {});
 
-  const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-  const total = entries.reduce((sum, [, count]) => sum + count, 0);
-  const colors = ["#4b8cff", "#64d2ff", "#7b9cff", "#7dce8a", "#ffc069", "#ff8f6b", "#b98cff", "#63c29b", "#f5c4ff", "#5a7fff"];
+  const today        = new Date();
+  const pendingTerms = ['pending', 'pendiente', 'unpaid', 'deudor'];
+  const paidTerms    = ['paid', 'pagado', 'completado', 'pagada'];
 
-  pieChartState = {
-    entries,
-    colors,
-    total,
-    selectedIndex: pieChartState.selectedIndex != null && pieChartState.selectedIndex < entries.length ? pieChartState.selectedIndex : null,
-    hoverIndex: null
-  };
+  const paymentGroups = {};
+  validPayments.forEach(p => {
+    if (p.studentId == null) return;
+    if (!paymentGroups[p.studentId]) paymentGroups[p.studentId] = [];
+    paymentGroups[p.studentId].push(p);
+  });
 
-  drawPieChart(ctx, canvas, legend, info, pieChartState);
-
-  if (!canvas.dataset.pieEventsAttached) {
-    canvas.addEventListener("mousemove", event => {
-      const hoverIndex = getPieChartSegmentIndex(event, canvas, pieChartState);
-      if (hoverIndex !== pieChartState.hoverIndex) {
-        pieChartState.hoverIndex = hoverIndex;
-        drawPieChart(ctx, canvas, legend, info, pieChartState);
-      }
+  const pendingIds = new Set();
+  const currentIds = new Set();
+  Object.entries(paymentGroups).forEach(([sid, pmts]) => {
+    const hasPending = pmts.some(p => {
+      const s   = String(p.status ?? '').toLowerCase();
+      const due = p.dueDate ? new Date(p.dueDate) : null;
+      return pendingTerms.some(t => s.includes(t))
+        || (due && due < today && !paidTerms.some(t => s.includes(t)));
     });
+    (hasPending ? pendingIds : currentIds).add(sid);
+  });
 
-    canvas.addEventListener("mouseout", () => {
-      pieChartState.hoverIndex = null;
-      drawPieChart(ctx, canvas, legend, info, pieChartState);
-    });
+  const noPayments = validStudents.filter(s => !paymentGroups[s.id]).length;
 
-    canvas.addEventListener("click", event => {
-      const clickedIndex = getPieChartSegmentIndex(event, canvas, pieChartState);
-      pieChartState.selectedIndex = clickedIndex === pieChartState.selectedIndex ? null : clickedIndex;
-      drawPieChart(ctx, canvas, legend, info, pieChartState);
-    });
+  $('m-students').textContent = validStudents.length;
+  $('m-courses').textContent  = validCourses.length;
+  $('m-pending').textContent  = pendingIds.size;
+  $('m-current').textContent  = currentIds.size + noPayments;
 
-    canvas.dataset.pieEventsAttached = "true";
-  }
+  renderPieChart(validStudents);
+  renderBarChart(validCourses, teachersMap);
 }
 
-function renderFailingCoursesBarChart(courses, teachersMap = {}) {
-  const canvas = dashboardBarCanvas;
-  const legend = document.getElementById("dashboardBarLegend");
-  const ctx = canvas.getContext("2d");
-  const info = barChartInfo;
+function renderPieChart(students) {
+  const counts = {};
+  students.forEach(s => {
+    const c = String(s.comuna || 'Sin comuna').trim();
+    counts[c] = (counts[c] || 0) + 1;
+  });
+  const labels = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+  const data   = labels.map(l => counts[l]);
+  const colors = [
+    '#3b82f6','#10b981','#f59e0b','#8b5cf6','#ef4444',
+    '#06b6d4','#f97316','#6366f1','#14b8a6','#a855f7',
+    '#84cc16','#ec4899'
+  ];
 
+  if (pieChart) pieChart.destroy();
+  pieChart = new Chart($('pieChart').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: colors.slice(0, labels.length),
+        borderWidth: 2,
+        borderColor: '#fff',
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: { font: { size: 11 }, boxWidth: 10, padding: 8, color: '#64748b' }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.label}: ${ctx.raw} estudiante${ctx.raw !== 1 ? 's' : ''}`
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderBarChart(courses, teachersMap) {
   const entries = courses
-    .map(course => {
-      const teacherId = course.teacherId != null ? course.teacherId : "N/A";
-      const teacherName = teachersMap[teacherId] || `Profesor ${teacherId}`;
-      return {
-        label: course.name || `Curso ${course.id}`,
-        teacherId: teacherId,
-        teacherName: teacherName,
-        percentage: typeof course.approvalPercentage === "number" ? Math.max(0, Math.min(100, 100 - course.approvalPercentage)) : 0,
-        id: course.id
-      };
-    })
-    .sort((a, b) => b.percentage - a.percentage)
+    .filter(c => c.approvalPercentage != null)
+    .map(c => ({
+      name:       c.name || `Curso ${c.id}`,
+      teacher:    teachersMap[c.teacherId] || `Profesor ${c.teacherId}`,
+      reprobacion: Math.max(0, 100 - c.approvalPercentage)
+    }))
+    .sort((a, b) => b.reprobacion - a.reprobacion)
     .slice(0, 8);
 
-  barChartState = {
-    entries,
-    selectedIndex: barChartState.selectedIndex != null && barChartState.selectedIndex < entries.length ? barChartState.selectedIndex : null,
-    hoverIndex: null
-  };
+  const labels = entries.map(e => e.name.length > 16 ? e.name.slice(0, 15) + '…' : e.name);
 
-  drawBarChart(ctx, canvas, legend, info, barChartState);
-
-  if (!canvas.dataset.barEventsAttached) {
-    canvas.addEventListener("mousemove", event => {
-      const hoverIndex = getBarChartIndex(event, canvas, barChartState);
-      if (hoverIndex !== barChartState.hoverIndex) {
-        barChartState.hoverIndex = hoverIndex;
-        drawBarChart(ctx, canvas, legend, info, barChartState);
+  if (barChart) barChart.destroy();
+  barChart = new Chart($('barChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: '% Reprobación',
+        data: entries.map(e => e.reprobacion),
+        backgroundColor: entries.map(e =>
+          e.reprobacion >= 50 ? '#ef4444' : e.reprobacion >= 30 ? '#f59e0b' : '#10b981'
+        ),
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: ctx => entries[ctx[0].dataIndex]?.name || '',
+            afterBody: ctx => [`Profesor: ${entries[ctx[0].dataIndex]?.teacher || '—'}`]
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          ticks: { callback: v => v + '%', color: '#94a3b8', font: { size: 11 } },
+          grid: { color: '#f1f5f9' }
+        },
+        x: {
+          ticks: { color: '#94a3b8', font: { size: 11 } },
+          grid: { display: false }
+        }
       }
-    });
-
-    canvas.addEventListener("mouseout", () => {
-      barChartState.hoverIndex = null;
-      drawBarChart(ctx, canvas, legend, info, barChartState);
-    });
-
-    canvas.addEventListener("click", event => {
-      const clickedIndex = getBarChartIndex(event, canvas, barChartState);
-      barChartState.selectedIndex = clickedIndex === barChartState.selectedIndex ? null : clickedIndex;
-      drawBarChart(ctx, canvas, legend, info, barChartState);
-    });
-
-    canvas.dataset.barEventsAttached = "true";
-  }
+    }
+  });
 }
 
-function drawBarChart(ctx, canvas, legend, infoBox, state) {
-  const { entries, selectedIndex, hoverIndex } = state;
-  const { width: displayWidth, height: displayHeight } = resizeCanvas(canvas, ctx);
-  ctx.clearRect(0, 0, displayWidth, displayHeight);
-  if (legend) legend.innerHTML = "";
-  infoBox.textContent = "Haz clic en una barra para ver el curso y porcentaje.";
-
-  if (!entries.length) {
-    ctx.fillStyle = "#e2e8f0";
-    ctx.font = "16px Inter, sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText("No hay datos", displayWidth / 2, displayHeight / 2);
+// ── EXPORTAR ──────────────────────────────────────────────────────
+async function exportData(page) {
+  const data = pageData[page];
+  if (!data || !data.length) {
+    toast('No hay datos para exportar', 'error');
     return;
   }
+  const svc = SERVICES[page];
+  let rows  = [];
 
-  const padding = 56;
-  const axisWidth = 32;
-  const chartLeft = padding + axisWidth;
-  const chartWidth = displayWidth - chartLeft - padding;
-  const chartHeight = displayHeight - padding * 2;
-  const maxValue = 100;
-  const barWidth = chartWidth / entries.length * 0.7;
-  const gap = chartWidth / entries.length * 0.3;
-  const baseY = displayHeight - padding;
-  const colors = ["#f97316", "#fb7185", "#6366f1", "#22c55e", "#38bdf8", "#facc15", "#a855f7", "#0ea5e9"];
+  if (page === 'courses') {
+    const teachers = await fetchJSON('http://localhost:8081/api/teachers');
+    const tMap = teachers.reduce((a, t) => { a[t.id] = `${t.firstName} ${t.lastName}`; return a; }, {});
+    rows = [['ID','Nombre','Descripción','Profesor','Créditos','Máx. Est.','% Aprobación','% Reprobación']];
+    data.forEach(c => rows.push([
+      c.id, c.name, c.description,
+      tMap[c.teacherId] || c.teacherId,
+      c.credits, c.maxStudents, c.approvalPercentage,
+      c.approvalPercentage != null ? 100 - c.approvalPercentage : '—'
+    ]));
 
-  ctx.font = "12px Inter, sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillStyle = "#475569";
-
-  ctx.strokeStyle = "rgba(100, 116, 139, 0.2)";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(chartLeft, padding);
-  ctx.lineTo(chartLeft, baseY);
-  ctx.stroke();
-
-  ctx.textAlign = "right";
-  ctx.fillStyle = "#475569";
-  for (let value = 10; value <= maxValue; value += 10) {
-    const y = baseY - (value / maxValue) * chartHeight;
-    ctx.fillText(`${value}`, chartLeft - 8, y + 4);
-
-    ctx.strokeStyle = "rgba(100, 116, 139, 0.12)";
-    ctx.beginPath();
-    ctx.moveTo(chartLeft, y);
-    ctx.lineTo(displayWidth - padding, y);
-    ctx.stroke();
-  }
-
-  ctx.textAlign = "center";
-  ctx.fillStyle = "#475569";
-
-  entries.forEach((entry, index) => {
-    const x = chartLeft + index * (barWidth + gap) + gap / 2 + barWidth / 2;
-    const barHeight = (entry.percentage / maxValue) * chartHeight;
-    const y = baseY - barHeight;
-    const isSelected = index === selectedIndex;
-    const isHovered = index === hoverIndex;
-    const color = colors[index % colors.length];
-    const borderWidth = isSelected ? 5 : isHovered ? 3 : 1;
-    const strokeColor = isSelected ? "rgba(75, 140, 255, 0.9)" : "rgba(34, 55, 95, 0.4)";
-
-    ctx.fillStyle = color;
-    ctx.fillRect(x - barWidth / 2, y, barWidth, barHeight);
-
-    if (isSelected || isHovered) {
-      ctx.strokeStyle = strokeColor;
-      ctx.lineWidth = borderWidth;
-      ctx.strokeRect(x - barWidth / 2, y, barWidth, barHeight);
-    }
-
-    ctx.fillStyle = "#1f2937";
-    ctx.textAlign = "center";
-    ctx.fillText(`${entry.percentage}%`, x, y - 10);
-  });
-
-  if (legend) {
-    entries.forEach((entry, index) => {
-      const legendItem = document.createElement("div");
-      legendItem.className = "legend-item";
-      if (index === selectedIndex) legendItem.classList.add("selected");
-      legendItem.innerHTML = `
-        <span class="legend-color" style="background:${colors[index % colors.length]}"></span>
-        <div class="legend-meta">
-          <strong>${entry.label}</strong>
-          <span>${entry.teacherName}</span>
-        </div>
-      `;
-
-      legendItem.addEventListener("click", () => {
-        state.selectedIndex = index === selectedIndex ? null : index;
-        drawBarChart(ctx, canvas, legend, infoBox, state);
+  } else if (page === 'students') {
+    const pmts = await fetchJSON('http://localhost:8083/api/payments');
+    const today = new Date();
+    const pending = ['pending','pendiente','unpaid','deudor'];
+    const paid    = ['paid','pagado','completado','pagada'];
+    rows = [['ID','Nombre','Email','Comuna','Estado matrícula']];
+    data.forEach(s => {
+      const sp = pmts.filter(p => String(p.studentId) === String(s.id));
+      const hasPending = sp.some(p => {
+        const st  = String(p.status ?? '').toLowerCase();
+        const due = p.dueDate ? new Date(p.dueDate) : null;
+        return pending.some(t => st.includes(t)) || (due && due < today && !paid.some(t => st.includes(t)));
       });
-
-      legendItem.addEventListener("mouseenter", () => {
-        state.hoverIndex = index;
-        drawBarChart(ctx, canvas, legend, infoBox, state);
-      });
-
-      legendItem.addEventListener("mouseleave", () => {
-        state.hoverIndex = null;
-        drawBarChart(ctx, canvas, legend, infoBox, state);
-      });
-
-      legend.appendChild(legendItem);
-    });
-  }
-
-  const activeIndex = selectedIndex != null ? selectedIndex : hoverIndex;
-  if (activeIndex != null) {
-    const entry = entries[activeIndex];
-    infoBox.textContent = `${entry.label} · ${entry.teacherName} · ${entry.percentage}% reprobación`;
-  }
-}
-
-function getBarChartIndex(event, canvas, state) {
-  const rect = canvas.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  const padding = 56;
-  const axisWidth = 32;
-  const chartLeft = padding + axisWidth;
-  const chartWidth = rect.width - chartLeft - padding;
-  const entries = state.entries;
-  const barWidth = chartWidth / entries.length * 0.7;
-  const gap = chartWidth / entries.length * 0.3;
-
-  for (let index = 0; index < entries.length; index++) {
-    const startX = chartLeft + index * (barWidth + gap) + gap / 2;
-    const endX = startX + barWidth;
-    if (x >= startX && x <= endX) {
-      return index;
-    }
-  }
-  return null;
-}
-
-function drawPieChart(ctx, canvas, legend, infoBox, state) {
-  const { entries, colors, total, selectedIndex, hoverIndex } = state;
-  const { width: displayWidth, height: displayHeight } = resizeCanvas(canvas, ctx);
-  ctx.clearRect(0, 0, displayWidth, displayHeight);
-  legend.innerHTML = "";
-  infoBox.textContent = "Haz clic en un segmento para ver el porcentaje.";
-
-  if (entries.length === 0) {
-    ctx.fillStyle = "#e2e8f0";
-    ctx.font = "16px Inter, sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText("No hay datos", displayWidth / 2, displayHeight / 2);
-    return;
-  }
-
-  let startAngle = -0.5 * Math.PI;
-  const centerX = displayWidth / 2;
-  const centerY = displayHeight / 2;
-  const radius = Math.min(displayWidth, displayHeight) / 2 - 18;
-
-  entries.forEach(([comuna, count], index) => {
-    const sliceAngle = (count / total) * 2 * Math.PI;
-    const color = colors[index % colors.length];
-    const isSelected = index === selectedIndex;
-    const isHovered = index === hoverIndex;
-    const lineWidth = isSelected ? 10 : isHovered ? 6 : 2;
-
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY);
-    ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
-    ctx.closePath();
-    ctx.fillStyle = color;
-    ctx.fill();
-
-    if (isSelected || isHovered) {
-      ctx.strokeStyle = isSelected ? "rgba(75, 140, 255, 0.9)" : "rgba(34, 55, 95, 0.6)";
-      ctx.lineWidth = lineWidth;
-      ctx.stroke();
-    }
-
-    startAngle += sliceAngle;
-  });
-
-  const activeIndex = selectedIndex != null ? selectedIndex : hoverIndex;
-  if (activeIndex != null) {
-    const [comuna, count] = entries[activeIndex];
-    const percentage = ((count / total) * 100).toFixed(1);
-    infoBox.textContent = `${comuna}: ${count} estudiante${count !== 1 ? "s" : ""} · ${percentage}% del total`;
-  }
-}
-
-function getPieChartSegmentIndex(event, canvas, state) {
-  const rect = canvas.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
-  const centerX = rect.width / 2;
-  const centerY = rect.height / 2;
-  const dx = x - centerX;
-  const dy = y - centerY;
-  const distance = Math.sqrt(dx * dx + dy * dy);
-  const radius = Math.min(rect.width, rect.height) / 2 - 18;
-
-  if (distance > radius) return null;
-
-  let angle = Math.atan2(dy, dx);
-  if (angle < -0.5 * Math.PI) angle += 2 * Math.PI;
-
-  let startAngle = -0.5 * Math.PI;
-  for (let index = 0; index < state.entries.length; index++) {
-    const sliceAngle = (state.entries[index][1] / state.total) * 2 * Math.PI;
-    if (angle >= startAngle && angle < startAngle + sliceAngle) {
-      return index;
-    }
-    startAngle += sliceAngle;
-  }
-
-  return state.entries.length - 1;
-}
-
-function populateForm(item) {
-  entityIdInput.value = item.id;
-  const config = SERVICE_CONFIG[currentServiceKey];
-  config.fields.forEach(field => {
-    const control = document.getElementById(field.name);
-    if (!control) return;
-    if (field.type === "checkbox") {
-      control.checked = Boolean(item[field.name]);
-    } else {
-      control.value = item[field.name] ?? "";
-    }
-  });
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-async function deleteEntity(config, id) {
-  if (!confirm(`¿Eliminar registro #${id}?`)) return;
-  try {
-    const response = await fetch(`${config.baseUrl}/${id}`, { method: "DELETE" });
-    if (response.ok) {
-      showMessage(`Registro #${id} eliminado correctamente.`, false);
-      loadList(config);
-      resetForm();
-    } else {
-      showMessage("No se pudo eliminar el registro.", true);
-    }
-  } catch (error) {
-    showMessage("Error de conexión al eliminar el registro.", true);
-  }
-}
-
-async function onSubmit(event) {
-  event.preventDefault();
-  const config = SERVICE_CONFIG[currentServiceKey];
-  const id = entityIdInput.value.trim();
-  const payload = buildPayload(config);
-
-  if (!payload) return;
-
-  const method = id ? "PUT" : "POST";
-  const url = id ? `${config.baseUrl}/${id}` : config.baseUrl;
-
-  try {
-    const response = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      rows.push([s.id, `${s.firstName} ${s.lastName}`, s.email, s.comuna || '—', hasPending ? 'Pendiente' : 'Al día']);
     });
 
-    if (response.ok) {
-      showMessage(id ? `Registro #${id} actualizado.` : `Registro creado correctamente.`, false);
-      loadList(config);
-      resetForm();
-    } else {
-      const errorPayload = await response.text();
-      showMessage(`Error en el servicio: ${errorPayload}`, true);
-    }
-  } catch (error) {
-    showMessage("No se pudo conectar con el servicio. Verifica que esté activo.", true);
-  }
-}
+  } else if (page === 'teachers') {
+    const courses = await fetchJSON('http://localhost:8082/api/courses');
+    const tCourses = {};
+    courses.forEach(c => {
+      const k = String(c.teacherId);
+      if (!tCourses[k]) tCourses[k] = [];
+      tCourses[k].push(c.name);
+    });
+    rows = [['ID','Nombre','Email','Especialidad','Cursos a cargo']];
+    data.forEach(t => rows.push([
+      t.id, `${t.firstName} ${t.lastName}`, t.email, t.specialty || '—',
+      (tCourses[String(t.id)] || []).join('; ') || '—'
+    ]));
 
-function buildPayload(config) {
-  const payload = {};
-  let valid = true;
+  } else if (page === 'payments') {
+    const students = await fetchJSON('http://localhost:8081/api/students');
+    const sMap = students.reduce((a, s) => { a[s.id] = `${s.firstName} ${s.lastName}`; return a; }, {});
+    rows = [['ID','Estudiante','Monto','Estado','Vencimiento']];
+    data.forEach(p => rows.push([
+      p.id, sMap[p.studentId] || `Estudiante ${p.studentId}`,
+      p.amount, p.status, p.dueDate || '—'
+    ]));
 
-  config.fields.forEach(field => {
-    const control = document.getElementById(field.name);
-    if (!control) return;
-
-    if (field.type === "checkbox") {
-      payload[field.name] = control.checked;
-      return;
-    }
-
-    const rawValue = control.value.trim();
-    if (rawValue === "") {
-      payload[field.name] = null;
-      return;
-    }
-
-    if (field.type === "number") {
-      payload[field.name] = field.step === "0.01" ? parseFloat(rawValue) : Number(rawValue);
-    } else {
-      payload[field.name] = rawValue;
-    }
-  });
-
-  if (currentServiceKey === "curso" && (payload.approvalPercentage < 1 || payload.approvalPercentage > 100)) {
-    showMessage("El porcentaje de aprobación debe estar entre 1 y 100.", true);
-    valid = false;
+  } else {
+    const headers = svc.columns.map(c => svc.labels[c] || c);
+    rows = [headers, ...data.map(item => svc.columns.map(c => item[c] ?? ''))];
   }
 
-  if (!valid) return null;
-  return payload;
+  const esc = v => String(v ?? '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${svc.title}</title></head><body>
+    <table border="1">${rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</table>
+  </body></html>`;
+
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([html], { type: 'application/vnd.ms-excel' }));
+  a.download = `reporte-${svc.title.toLowerCase()}.xls`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast(`Reporte de ${svc.title} exportado correctamente`, 'success');
 }
 
-function resetForm() {
-  entityIdInput.value = "";
-  const config = SERVICE_CONFIG[currentServiceKey];
-  config.fields.forEach(field => {
-    const control = document.getElementById(field.name);
-    if (!control) return;
-    if (field.type === "checkbox") {
-      control.checked = false;
-    } else {
-      control.value = "";
-    }
-  });
-}
-
-async function generateReport(config, item) {
-  let reportItem = { ...item };
-
-  if (currentServiceKey === "curso") {
-    const teacherName = await getTeacherName(item.teacherId);
-    reportItem = {
-      ...reportItem,
-      teacherName: teacherName || `Profesor ${item.teacherId}`
-    };
-    delete reportItem.teacherId;
-  }
-
-  const reportHtml = `
-    <div class="report-card">
-      <h4>Reporte de ${config.title.slice(0, -1)} #${item.id}</h4>
-      ${Object.entries(reportItem)
-        .filter(([key]) => key !== "id")
-        .map(([key, value]) => `<p><strong>${formatLabel(key)}:</strong> ${formatValue(value)}</p>`)
-        .join("")}
-    </div>
-  `;
-
-  reportContainer.innerHTML = reportHtml;
-  window.scrollTo({ top: reportContainer.offsetTop - 20, behavior: "smooth" });
-}
-
-async function getTeacherName(teacherId) {
-  if (!teachersMapCache) {
-    teachersMapCache = await loadTeachersMap();
-  }
-  return teachersMapCache[teacherId] || null;
-}
-
-async function loadTeachersMap() {
-  try {
-    const teachers = await fetchData("http://localhost:8081/api/teachers");
-    if (!Array.isArray(teachers)) return {};
-    return teachers.reduce((acc, teacher) => {
-      acc[teacher.id] = `${teacher.firstName} ${teacher.lastName}`;
-      return acc;
-    }, {});
-  } catch (error) {
-    return {};
-  }
-}
-
-async function loadStudentsMap() {
-  try {
-    const students = await fetchData(SERVICE_CONFIG.usuario.baseUrl);
-    if (!Array.isArray(students)) return {};
-    return students.reduce((acc, s) => {
-      acc[s.id] = `${s.firstName} ${s.lastName}`;
-      return acc;
-    }, {});
-  } catch (error) {
-    return {};
-  }
-}
-
-function showMessage(message, isError = false) {
-  messageBox.textContent = message;
-  messageBox.style.background = isError ? "rgba(255, 110, 110, 0.12)" : "rgba(113,199,247,0.12)";
-  messageBox.style.borderColor = isError ? "rgba(255, 110, 110, 0.24)" : "rgba(113,199,247,0.24)";
-}
-
+// ── ARRANQUE ──────────────────────────────────────────────────────
 init();

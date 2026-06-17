@@ -1,0 +1,17 @@
+.table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid #e2e8f0; background: white; }
+table { width: 100%; border-collapse: collapse; font-size: 0.84rem; min-width: 600px; }
+thead { background: #f8fafc; }
+th { padding: 11px 14px; text-align: left; font-weight: 600; color: #64748b; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
+td { padding: 12px 14px; border-bottom: 1px solid #f1f5f9; color: #0f172a; vertical-align: middle; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #f8fafc; }
+.cell-empty { color: #cbd5e1; }
+.row-actions { display: flex; gap: 5px; }
+.table-state { text-align: center; padding: 40px; color: #64748b; font-size: 0.85rem; background: white; border-radius: 12px; border: 1px solid #e2e8f0; }
+.table-state.empty .empty-icon { font-size: 2.4rem; margin-bottom: 8px; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; white-space: nowrap; }
+.badge-green  { background: #dcfce7; color: #16a34a; }
+.badge-red    { background: #fee2e2; color: #dc2626; }
+.badge-yellow { background: #fef9c3; color: #b45309; }
+.badge-blue   { background: #dbeafe; color: #2563eb; }
+.badge-gray   { background: #f1f5f9; color: #64748b; }

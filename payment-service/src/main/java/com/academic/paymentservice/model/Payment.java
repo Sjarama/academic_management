@@ -20,7 +20,7 @@ public class Payment {
     @Column(nullable = false)
     private Long studentId;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Long courseId;
 
     @Column(nullable = false)

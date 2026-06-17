@@ -1,0 +1,289 @@
+{
+  "info": {
+    "_postman_id": "academic-management-ep3",
+    "name": "Academic Management API - EP3",
+    "description": "Colección completa de endpoints para el sistema de gestión académica. Incluye User Service, Course Service, Payment Service y Notification Service.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "user_url",         "value": "http://localhost:8081", "type": "string" },
+    { "key": "course_url",       "value": "http://localhost:8082", "type": "string" },
+    { "key": "payment_url",      "value": "http://localhost:8083", "type": "string" },
+    { "key": "notification_url", "value": "http://localhost:8084", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "👥 User Service - Estudiantes",
+      "item": [
+        {
+          "name": "GET - Listar todos los estudiantes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{user_url}}/api/students", "host": ["{{user_url}}"], "path": ["api","students"] }
+          }
+        },
+        {
+          "name": "GET - Obtener estudiante por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{user_url}}/api/students/1", "host": ["{{user_url}}"], "path": ["api","students","1"] }
+          }
+        },
+        {
+          "name": "GET - Listar comunas disponibles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{user_url}}/api/students/comunas", "host": ["{{user_url}}"], "path": ["api","students","comunas"] }
+          }
+        },
+        {
+          "name": "POST - Crear estudiante",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Juan\",\n  \"lastName\": \"Pérez\",\n  \"email\": \"juan.perez@example.com\",\n  \"phone\": \"+56 9 1234 5678\",\n  \"address\": \"Av. Providencia 1234\",\n  \"comuna\": \"Providencia\"\n}"
+            },
+            "url": { "raw": "{{user_url}}/api/students", "host": ["{{user_url}}"], "path": ["api","students"] }
+          }
+        },
+        {
+          "name": "PUT - Actualizar estudiante",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Juan\",\n  \"lastName\": \"Pérez Actualizado\",\n  \"email\": \"juan.perez@example.com\",\n  \"phone\": \"+56 9 9999 8888\",\n  \"address\": \"Av. Las Condes 5678\",\n  \"comuna\": \"Las Condes\"\n}"
+            },
+            "url": { "raw": "{{user_url}}/api/students/1", "host": ["{{user_url}}"], "path": ["api","students","1"] }
+          }
+        },
+        {
+          "name": "DELETE - Eliminar estudiante",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{user_url}}/api/students/1", "host": ["{{user_url}}"], "path": ["api","students","1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👨‍🏫 User Service - Profesores",
+      "item": [
+        {
+          "name": "GET - Listar todos los profesores",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{user_url}}/api/teachers", "host": ["{{user_url}}"], "path": ["api","teachers"] }
+          }
+        },
+        {
+          "name": "GET - Obtener profesor por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{user_url}}/api/teachers/1", "host": ["{{user_url}}"], "path": ["api","teachers","1"] }
+          }
+        },
+        {
+          "name": "POST - Crear profesor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"María\",\n  \"lastName\": \"González\",\n  \"email\": \"maria.gonzalez@duocuc.cl\",\n  \"phone\": \"+56 9 8765 4321\",\n  \"address\": \"Av. Macul 2400\",\n  \"specialty\": \"Desarrollo de Software\"\n}"
+            },
+            "url": { "raw": "{{user_url}}/api/teachers", "host": ["{{user_url}}"], "path": ["api","teachers"] }
+          }
+        },
+        {
+          "name": "PUT - Actualizar profesor",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"María\",\n  \"lastName\": \"González\",\n  \"email\": \"maria.gonzalez@duocuc.cl\",\n  \"phone\": \"+56 9 1111 2222\",\n  \"address\": \"Av. Macul 2400\",\n  \"specialty\": \"Arquitectura de Software\"\n}"
+            },
+            "url": { "raw": "{{user_url}}/api/teachers/1", "host": ["{{user_url}}"], "path": ["api","teachers","1"] }
+          }
+        },
+        {
+          "name": "DELETE - Eliminar profesor",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{user_url}}/api/teachers/1", "host": ["{{user_url}}"], "path": ["api","teachers","1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📚 Course Service - Cursos",
+      "item": [
+        {
+          "name": "GET - Listar todos los cursos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{course_url}}/api/courses", "host": ["{{course_url}}"], "path": ["api","courses"] }
+          }
+        },
+        {
+          "name": "GET - Obtener curso por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{course_url}}/api/courses/1", "host": ["{{course_url}}"], "path": ["api","courses","1"] }
+          }
+        },
+        {
+          "name": "POST - Crear curso",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Desarrollo Fullstack III\",\n  \"description\": \"Curso avanzado de desarrollo con microservicios, React y Spring Boot\",\n  \"teacherId\": 1,\n  \"credits\": 4,\n  \"maxStudents\": 35,\n  \"approvalPercentage\": 70\n}"
+            },
+            "url": { "raw": "{{course_url}}/api/courses", "host": ["{{course_url}}"], "path": ["api","courses"] }
+          }
+        },
+        {
+          "name": "PUT - Actualizar curso",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Desarrollo Fullstack III - Actualizado\",\n  \"description\": \"Curso actualizado con nuevos contenidos de microservicios\",\n  \"teacherId\": 2,\n  \"credits\": 5,\n  \"maxStudents\": 40,\n  \"approvalPercentage\": 65\n}"
+            },
+            "url": { "raw": "{{course_url}}/api/courses/1", "host": ["{{course_url}}"], "path": ["api","courses","1"] }
+          }
+        },
+        {
+          "name": "DELETE - Eliminar curso",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{course_url}}/api/courses/1", "host": ["{{course_url}}"], "path": ["api","courses","1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💳 Payment Service - Pagos",
+      "item": [
+        {
+          "name": "GET - Listar todos los pagos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{payment_url}}/api/payments", "host": ["{{payment_url}}"], "path": ["api","payments"] }
+          }
+        },
+        {
+          "name": "GET - Obtener pago por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{payment_url}}/api/payments/1", "host": ["{{payment_url}}"], "path": ["api","payments","1"] }
+          }
+        },
+        {
+          "name": "POST - Crear pago",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 1,\n  \"courseId\": 1,\n  \"amount\": 150000.00,\n  \"status\": \"Pendiente\",\n  \"dueDate\": \"2026-07-31\"\n}"
+            },
+            "url": { "raw": "{{payment_url}}/api/payments", "host": ["{{payment_url}}"], "path": ["api","payments"] }
+          }
+        },
+        {
+          "name": "PUT - Actualizar pago",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 1,\n  \"courseId\": 1,\n  \"amount\": 150000.00,\n  \"status\": \"Pagado\",\n  \"dueDate\": \"2026-07-31\"\n}"
+            },
+            "url": { "raw": "{{payment_url}}/api/payments/1", "host": ["{{payment_url}}"], "path": ["api","payments","1"] }
+          }
+        },
+        {
+          "name": "DELETE - Eliminar pago",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{payment_url}}/api/payments/1", "host": ["{{payment_url}}"], "path": ["api","payments","1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔔 Notification Service - Notificaciones",
+      "item": [
+        {
+          "name": "GET - Listar todas las notificaciones",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{notification_url}}/api/notifications", "host": ["{{notification_url}}"], "path": ["api","notifications"] }
+          }
+        },
+        {
+          "name": "GET - Obtener notificación por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{notification_url}}/api/notifications/1", "host": ["{{notification_url}}"], "path": ["api","notifications","1"] }
+          }
+        },
+        {
+          "name": "POST - Crear notificación",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recipient\": \"estudiante@example.com\",\n  \"message\": \"Tu pago del mes de junio está pendiente. Por favor regulariza tu situación antes del 30/06/2026.\",\n  \"type\": \"PAGO_PENDIENTE\",\n  \"sent\": false\n}"
+            },
+            "url": { "raw": "{{notification_url}}/api/notifications", "host": ["{{notification_url}}"], "path": ["api","notifications"] }
+          }
+        },
+        {
+          "name": "PUT - Actualizar notificación",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recipient\": \"estudiante@example.com\",\n  \"message\": \"Tu pago fue recibido exitosamente. Gracias.\",\n  \"type\": \"PAGO_CONFIRMADO\",\n  \"sent\": true\n}"
+            },
+            "url": { "raw": "{{notification_url}}/api/notifications/1", "host": ["{{notification_url}}"], "path": ["api","notifications","1"] }
+          }
+        },
+        {
+          "name": "DELETE - Eliminar notificación",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{notification_url}}/api/notifications/1", "host": ["{{notification_url}}"], "path": ["api","notifications","1"] }
+          }
+        }
+      ]
+    }
+  ]
+}

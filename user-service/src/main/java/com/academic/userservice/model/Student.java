@@ -45,7 +45,6 @@ public class Student {
 
     private String address;
 
-    @NotBlank
     @Column(nullable = true)
     private String comuna;
 }

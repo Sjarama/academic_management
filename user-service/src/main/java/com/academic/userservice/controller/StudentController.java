@@ -4,9 +4,12 @@ import com.academic.userservice.model.Student;
 import com.academic.userservice.service.StudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 import java.util.List;
 
@@ -57,5 +60,11 @@ public class StudentController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (!service.delete(id)) return ResponseEntity.notFound().build();
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleDuplicate(DataIntegrityViolationException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Map.of("error", "Ya existe un estudiante con ese email"));
     }
 }

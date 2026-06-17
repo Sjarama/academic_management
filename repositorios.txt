@@ -1,0 +1,19 @@
+Sistema de Gestión Académica — EP3 — DSY1106 Fullstack III
+Autor: Sebastián Jara (Sjarama)
+Fecha: Junio 2026
+
+Repositorio principal:
+https://github.com/Sjarama/academic_management
+
+Microservicios (subdirectorios del repositorio principal):
+https://github.com/Sjarama/academic_management/tree/main/user-service
+https://github.com/Sjarama/academic_management/tree/main/course-service
+https://github.com/Sjarama/academic_management/tree/main/payment-service
+https://github.com/Sjarama/academic_management/tree/main/notification-service
+
+Frontend:
+https://github.com/Sjarama/academic_management/tree/main/frontend-react
+
+Documentación:
+https://github.com/Sjarama/academic_management/blob/main/README.md
+https://github.com/Sjarama/academic_management/blob/main/postman/Academic_Management_API.postman_collection.json

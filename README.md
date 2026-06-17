@@ -1,57 +1,123 @@
-# Guía de Despliegue del Entorno Académico (Docker)
-Para asegurar el correcto funcionamiento de los servicios, siga estrictamente el procedimiento detallado a continuación:
+# Sistema de Gestión Académica
 
-## 1. Preparación del Entorno
-Es imprescindible verificar que el motor de contenedores esté operativo. Para ello, inicie la aplicación Docker Desktop y asegúrese de que el servicio se encuentre en estado Running antes de proceder con los comandos de terminal.
-Para la inicialización del docker desktop se debe tulizar el siguiente comando:
+**DSY1106 - Desarrollo Fullstack III — EP3**  
+Duoc UC | Sede Mac-Iver
+
+Plataforma de gestión académica basada en arquitectura de microservicios con Spring Boot, React y Docker.
+
+---
+
+## Arquitectura del sistema
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                   Frontend React (Vite + Chart.js)               │
+│                      http://localhost:5501                       │
+└─────────────────────────┬────────────────────────────────────────┘
+                          │ HTTP REST / CORS
+         ┌────────────────┼──────────────────┐──────────────────┐
+         │                │                  │                  │
+         ▼                ▼                  ▼                  ▼
+┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+│ user-service │ │course-service│ │payment-svc   │ │notif-service │
+│   :8081      │ │   :8082      │ │   :8083      │ │   :8084      │
+└──────┬───────┘ └──────┬───────┘ └──────┬───────┘ └──────┬───────┘
+       │                │                │                │
+       ▼                ▼                ▼                ▼
+  ┌─────────┐    ┌──────────┐    ┌──────────┐    ┌──────────────┐
+  │ user-db │    │course-db │    │payment-db│    │notification-db│
+  │  :3307  │    │  :3308   │    │  :3309   │    │    :3310      │
+  └─────────┘    └──────────┘    └──────────┘    └──────────────┘
+
+                    ┌─────────────────┐
+                    │    RabbitMQ     │
+                    │  :5672 / :15672 │
+                    └─────────────────┘
+```
+
+## Microservicios
+
+| Servicio | Puerto | Base de datos | Descripción |
+|----------|--------|---------------|-------------|
+| [user-service](./user-service/README.md) | 8081 | db_usuarios | Estudiantes y profesores |
+| [course-service](./course-service/README.md) | 8082 | db_cursos | Cursos académicos |
+| [payment-service](./payment-service/README.md) | 8083 | db_pagos | Pagos estudiantiles |
+| [notification-service](./notification-service/README.md) | 8084 | db_notificaciones | Notificaciones |
+
+## Stack tecnológico
+
+- **Backend**: Java 21, Spring Boot 3, Spring Data JPA, Hibernate, Lombok
+- **Frontend**: React 18, Vite, Chart.js 4, Axios
+- **Base de datos**: MySQL 8.0 (una por microservicio — aislamiento total)
+- **Mensajería**: RabbitMQ 3
+- **Contenedores**: Docker, Docker Compose
+- **Cobertura**: JaCoCo Maven Plugin (≥ 60% en todos los servicios)
+
+---
+
+## Requisitos previos
+
+- Docker Desktop (con el motor corriendo)
+- Git
+
+## Despliegue completo
+
+```bash
+# 1. Iniciar Docker Desktop
 docker desktop start
-Para verificar que docker desktop esta corriendo se debe utilizar el siguiente comando:
-docker ps
 
-## 2. Clonación del Repositorio
-Debe obtener una copia local del código fuente. Ejecute la clonación del repositorio oficial mediante el siguiente comando:
+# 2. Clonar el repositorio
 git clone https://github.com/Sjarama/academic_management.git
-
-Nota: Asegúrese de contar con los permisos de acceso necesarios para interactuar con el repositorio remoto.
-
-## 3. Localización del Directorio de Trabajo
-Una vez clonado el proyecto, acceda a la interfaz de línea de comandos (CLI) de su preferencia y navegue hasta el directorio raíz del proyecto utilizando la ruta:
 cd academic_management
 
-## 4. Orquestación y Levantamiento de Servicios
-Para finalizar, proceda con el despliegue de la infraestructura definida en el archivo de configuración. Utilice la herramienta Docker Compose para inicializar los contenedores en segundo plano (detached mode), asegurando el levantamiento de las bases de datos y el broker de mensajería:
+# 3. Levantar todo el stack (build + contenedores)
+docker-compose up --build -d
 
-## Bash
-`docker-compose up --build -d` 
+# 4. Verificar que todos los contenedores estén corriendo
+docker ps
+```
 
-Este comando descargará las imágenes necesarias y configurará las instancias para los módulos de usuarios, cursos, pagos, notificaciones y el servicio de RabbitMQ de forma simultánea.
+La aplicación estará disponible en **http://localhost:5501**
 
-Después de levantar los servicios, se puede acceder al frontend de gestión principal en `http://localhost:5501` y al nuevo frontend informativo en `http://localhost:5052`.
+---
 
+## Tests y cobertura JaCoCo
 
-# Testeo
-## Estudiantes 
-Pasos a seguir para ver todos los estudiantes:
-Ejecutar en el terminal el siguiente comando:
-docker exec -it user-db mysql -u root -psecret db_usuarios
+```bash
+cd user-service         && ./mvnw test   # → 65.6% cobertura
+cd course-service       && ./mvnw test   # → 86.2% cobertura
+cd payment-service      && ./mvnw test   # → 98.2% cobertura
+cd notification-service && ./mvnw test   # → 68.6% cobertura
 
--- ver todos los estudiantes
-SELECT * FROM students;
+# Reporte HTML en: target/site/jacoco/index.html
+```
 
+## Colección Postman
 
--- ver estructura de la tabla
-DESCRIBE students;
+Importar `postman/Academic_Management_API.postman_collection.json` en Postman.  
+Contiene todos los endpoints CRUD para los 4 microservicios con ejemplos de request/response.
 
-## Cursos
-Pasos a seguir para ver todos los cursos:
-Ejecutar en la terminal el siguiente comando:
-docker exec -it course-db mysql -u root -psecret db_cursos
--- ver todos los cursos
-SELECT * FROM courses;
--- ver estructura de la tabla
-DESCRIBE courses;
+## Verificación de base de datos (MySQL directo)
 
+```bash
+# Estudiantes
+docker exec -it user-db mysql -u root -psecret db_usuarios -e "SELECT * FROM students LIMIT 5;"
 
--- salir
-exit
+# Cursos
+docker exec -it course-db mysql -u root -psecret db_cursos -e "SELECT * FROM courses LIMIT 5;"
 
+# Pagos
+docker exec -it payment-db mysql -u root -psecret db_pagos -e "SELECT * FROM payments LIMIT 5;"
+
+# Notificaciones
+docker exec -it notification-db mysql -u root -psecret db_notificaciones -e "SELECT * FROM notifications LIMIT 5;"
+```
+
+## Desarrollo frontend local
+
+```bash
+cd frontend-react
+npm install
+npm run dev
+# Disponible en http://localhost:5173
+```
