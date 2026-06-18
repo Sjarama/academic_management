@@ -1,0 +1,28 @@
+.topbar {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.topbar-title { font-size: 0.95rem; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.topbar-hamburger { display: none; font-size: 1.1rem; }
+
+@media (max-width: 768px) {
+  .topbar-hamburger { display: inline-flex; }
+}
+
+@media (max-width: 480px) {
+  .topbar { padding: 0 14px; }
+  .btn-label { display: none; }
+  .topbar-actions { gap: 5px; }
+}
