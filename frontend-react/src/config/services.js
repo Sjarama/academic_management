@@ -1,0 +1,80 @@
+export const SERVICES = {
+  students: {
+    title: 'Estudiantes',
+    singular: 'Estudiante',
+    url: 'http://localhost:8081/api/students',
+    columns: ['id','firstName','lastName','email','phone','address','comuna'],
+    labels: { id:'ID', firstName:'Nombre', lastName:'Apellido', email:'Email', phone:'Teléfono', address:'Dirección', comuna:'Comuna' },
+    fields: [
+      { name:'firstName',  label:'Nombre',    type:'text' },
+      { name:'lastName',   label:'Apellido',  type:'text' },
+      { name:'email',      label:'Email',     type:'email' },
+      { name:'phone',      label:'Teléfono',  type:'text' },
+      { name:'address',    label:'Dirección', type:'text' },
+      { name:'comuna',     label:'Comuna',    type:'select-comunas' },
+    ],
+  },
+  teachers: {
+    title: 'Profesores',
+    singular: 'Profesor',
+    url: 'http://localhost:8081/api/teachers',
+    columns: ['id','firstName','lastName','email','phone','address','specialty'],
+    labels: { id:'ID', firstName:'Nombre', lastName:'Apellido', email:'Email', phone:'Teléfono', address:'Dirección', specialty:'Especialidad' },
+    fields: [
+      { name:'firstName', label:'Nombre',       type:'text' },
+      { name:'lastName',  label:'Apellido',     type:'text' },
+      { name:'email',     label:'Email',        type:'email' },
+      { name:'phone',     label:'Teléfono',     type:'text' },
+      { name:'address',   label:'Dirección',    type:'text' },
+      { name:'specialty', label:'Especialidad', type:'text' },
+    ],
+  },
+  courses: {
+    title: 'Cursos',
+    singular: 'Curso',
+    url: 'http://localhost:8082/api/courses',
+    columns: ['id','name','description','teacherId','credits','maxStudents','approvalPercentage'],
+    labels: { id:'ID', name:'Nombre', description:'Descripción', teacherId:'ID Profesor', credits:'Créditos', maxStudents:'Máx. Est.', approvalPercentage:'% Aprobación' },
+    fields: [
+      { name:'name',               label:'Nombre del curso',              type:'text' },
+      { name:'description',        label:'Descripción',                   type:'textarea' },
+      { name:'teacherId',          label:'ID Profesor',                   type:'number' },
+      { name:'credits',            label:'Créditos',                      type:'number' },
+      { name:'maxStudents',        label:'Máximo de estudiantes',         type:'number' },
+      { name:'approvalPercentage', label:'% Aprobación (1–100)',          type:'number', min:1, max:100 },
+    ],
+  },
+  payments: {
+    title: 'Pagos',
+    singular: 'Pago',
+    url: 'http://localhost:8083/api/payments',
+    columns: ['id','studentId','courseId','amount','status','dueDate'],
+    labels: { id:'ID', studentId:'ID Estudiante', courseId:'ID Curso', amount:'Monto', status:'Estado', dueDate:'Vencimiento' },
+    fields: [
+      { name:'studentId', label:'ID Estudiante',        type:'number' },
+      { name:'courseId',  label:'ID Curso (opcional)',  type:'number' },
+      { name:'amount',    label:'Monto',                type:'number', step:'0.01' },
+      { name:'status',    label:'Estado',               type:'text' },
+      { name:'dueDate',   label:'Fecha vencimiento',    type:'date' },
+    ],
+  },
+  notifications: {
+    title: 'Notificaciones',
+    singular: 'Notificación',
+    url: 'http://localhost:8084/api/notifications',
+    columns: ['id','recipient','message','type','sent'],
+    labels: { id:'ID', recipient:'Destinatario', message:'Mensaje', type:'Tipo', sent:'Enviado' },
+    fields: [
+      { name:'recipient', label:'Destinatario', type:'text' },
+      { name:'message',   label:'Mensaje',      type:'textarea' },
+      { name:'type',      label:'Tipo',         type:'text' },
+      { name:'sent',      label:'Enviado',      type:'checkbox' },
+    ],
+  },
+};
+
+export const COMUNAS_DEFAULT = [
+  'Santiago','Providencia','Las Condes','Ñuñoa','Maipú','La Florida',
+  'Puente Alto','Vitacura','La Reina','Peñalolén','San Miguel','Macul',
+  'Cerrillos','Conchalí','Renca','Pudahuel','Quilicura','Recoleta',
+];
